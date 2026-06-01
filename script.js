@@ -35,6 +35,13 @@ botonEntrar.addEventListener("click", () => {
   }, 2600);
 });
 
+/* ── Si venimos de otra página (ej. Volver), entrar directo al interior ── */
+if (new URLSearchParams(window.location.search).has("dentro")) {
+  imagenEscena.src = "img/interior-tienda.png";
+  pantallaEntrada.classList.add("oculto");
+  pantallaInterior.classList.remove("oculto");
+}
+
 /* ── Tooltip follow-mouse ── */
 let mouseX = 0, mouseY = 0;
 
