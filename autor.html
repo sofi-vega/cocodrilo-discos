@@ -1,36 +1,479 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Autor y obra | El Cocodrilo Discos</title>
-  <link rel="stylesheet" href="autor.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Autor y obra | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a autor.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Press+Start+2P&display=swap');
+
+:root{
+  --oro:#e0b43c;
+  --oro-bright:#f5ca4e;
+  --verde:#123d20;
+  --verde-claro:#1e6b3a;
+  --verde-oscuro:#0a2412;
+  --papel-1:#f6e8c6;
+  --papel-2:#e7d09c;
+  --papel-borde:#cdb277;
+  --tinta:#3a2410;
+  --tinta-suave:#6a4a26;
+  --fondo:#15110b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:
+    radial-gradient(ellipse at 50% 38%, #2a2012 0%, var(--fondo) 70%);
+  min-height:100vh;
+  overflow:hidden;
+  font-family:'EB Garamond', Georgia, serif;
+  color:var(--tinta);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* viñeta CRT suave para empatar con el sitio */
+body::after{
+  content:'';
+  position:fixed; inset:0;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.5) 100%);
+  pointer-events:none; z-index:50;
+}
+
+/* ── Barra de título (continuidad con el index) ── */
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro);
+  color:var(--papel-1);
+  font-family:'Press Start 2P', monospace;
+  font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px;
+  z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+
+/* ── Volver ── */
+.volver{
+  position:fixed; top:38px; left:24px; z-index:60;
+  padding:9px 15px;
+  background:rgba(18,61,32,.9);
+  color:var(--papel-1);
+  border:2px solid var(--oro);
+  text-decoration:none;
+  font-family:'Press Start 2P', monospace;
+  font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7);
+  transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== ESCENA + LIBRO ====== */
+.escena{ display:flex; flex-direction:column; align-items:center; gap:26px; }
+
+.libro{
+  position:relative;
+  width:520px; height:600px;
+  perspective:2400px;
+  filter:drop-shadow(0 30px 45px rgba(0,0,0,.6));
+}
+
+/* lomo + pila de hojas a la izquierda (da grosor de libro) */
+.lomo{
+  position:absolute; left:0; top:0; bottom:0; width:78px;
+  background:
+    linear-gradient(90deg, #2a1a0c 0%, #4a3015 40%, #3a2410 100%);
+  border:2px solid #1c1107;
+  border-right:none;
+  box-shadow:inset -6px 0 14px rgba(0,0,0,.55);
+}
+.lomo::before{ /* lineas que simulan cantos de hojas */
+  content:''; position:absolute; inset:8px 6px 8px 14px;
+  background:repeating-linear-gradient(180deg,
+    #e9d6a8 0 3px, #cdb277 3px 5px);
+  opacity:.85;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.3);
+}
+
+/* zona donde vive la página y la hoja que voltea */
+.zona{
+  position:absolute; left:74px; top:0;
+  width:440px; height:600px;
+  transform-style:preserve-3d;
+}
+/* sombra de encuadernación pegada al lomo */
+.zona::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:60px;
+  background:linear-gradient(90deg, rgba(0,0,0,.45), transparent);
+  z-index:6; pointer-events:none;
+}
+
+/* superficie de papel reutilizable */
+.papel{
+  background:
+    linear-gradient(135deg, var(--papel-1), var(--papel-2));
+  border:2px solid var(--papel-borde);
+  box-shadow:inset 0 0 40px rgba(120,90,40,.18);
+}
+.papel::after{ /* textura fibra muy sutil */
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,
+    rgba(120,90,40,.04) 0 2px, transparent 2px 4px);
+  pointer-events:none;
+}
+
+/* página base (la que se lee) */
+.hoja{
+  position:absolute; inset:0;
+  padding:54px 46px 48px;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+
+/* la hoja que voltea */
+.flip{
+  position:absolute; inset:0;
+  transform-origin:left center;
+  transform-style:preserve-3d;
+  z-index:8;
+  display:none;
+}
+.flip.activa{ display:block; }
+.cara{
+  position:absolute; inset:0;
+  padding:54px 46px 48px;
+  backface-visibility:hidden;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.cara.dorso{ transform:rotateY(180deg); }
+/* sombreado de pliegue mientras voltea */
+.flip.activa .cara::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(0,0,0,.28), transparent 45%);
+  pointer-events:none;
+}
+
+/* ====== CONTENIDO DE PÁGINA ====== */
+.num-cap{
+  font-family:'Press Start 2P', monospace;
+  font-size:11px; color:var(--oro);
+  letter-spacing:2px; margin-bottom:6px;
+  text-shadow:1px 1px 0 rgba(0,0,0,.15);
+}
+.titulo-cap{
+  font-size:30px; font-weight:600; line-height:1.1;
+  color:var(--tinta); margin-bottom:10px;
+}
+.regla{
+  width:70px; height:3px; margin-bottom:18px;
+  background:linear-gradient(90deg, var(--oro), transparent);
+}
+.cuerpo{ overflow-y:auto; padding-right:6px; }
+.cuerpo p{
+  font-size:16.5px; line-height:1.62;
+  margin-bottom:13px; text-align:justify;
+  color:#34230f;
+}
+.cuerpo p:first-letter{ } /* hook por si quieres capitular */
+.dropcap:first-letter{
+  float:left; font-size:52px; line-height:.8;
+  padding:4px 8px 0 0; color:var(--oro);
+  font-weight:600;
+}
+em{ color:var(--tinta-suave); }
+
+/* scrollbar discreto y a tono */
+.cuerpo::-webkit-scrollbar{ width:6px; }
+.cuerpo::-webkit-scrollbar-thumb{ background:rgba(160,120,50,.45); border-radius:3px; }
+.cuerpo::-webkit-scrollbar-track{ background:transparent; }
+
+/* número de página */
+.folio{
+  margin-top:auto; padding-top:10px;
+  text-align:center;
+  font-family:'Press Start 2P', monospace;
+  font-size:8px; color:var(--tinta-suave);
+  letter-spacing:1px;
+}
+
+/* ====== PORTADA (página 0) ====== */
+.portada{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; padding:50px 40px;
+}
+.portada .sello{
+  font-family:'Press Start 2P', monospace;
+  font-size:8px; color:var(--oro); letter-spacing:2px;
+  margin-bottom:22px;
+}
+.portada h1{ font-size:46px; font-weight:600; line-height:1.05; color:var(--tinta); }
+.portada .sub{ font-size:19px; font-style:italic; color:var(--tinta-suave); margin-top:14px; }
+.portada .orn{ margin:26px 0; color:var(--oro); font-size:20px; letter-spacing:8px; }
+.portada .hint{
+  font-family:'Press Start 2P', monospace;
+  font-size:8px; color:var(--tinta-suave); letter-spacing:1px;
+  margin-top:6px; animation:parpadeo 1.5s step-end infinite;
+}
+@keyframes parpadeo{ 0%,100%{opacity:.85} 50%{opacity:.25} }
+
+/* ====== NAVEGACIÓN INFERIOR ====== */
+.controles{ display:flex; align-items:center; gap:14px; }
+
+.flecha{
+  width:46px; height:46px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(18,61,32,.9);
+  border:2px solid var(--oro);
+  color:var(--oro); font-size:18px;
+  cursor:pointer;
+  box-shadow:3px 3px 0 rgba(0,0,0,.6);
+  transition:transform .12s, background .12s, opacity .2s;
+}
+.flecha:hover:not([disabled]){ transform:translate(-2px,-2px); background:var(--verde-claro); color:var(--oro-bright); }
+.flecha[disabled]{ opacity:.28; cursor:default; }
+
+.indice{ display:flex; gap:8px; }
+.tab{
+  padding:8px 12px;
+  background:rgba(40,25,12,.55);
+  border:2px solid transparent;
+  border-bottom-color:rgba(224,180,60,.35);
+  color:var(--papel-1);
+  font-family:'Press Start 2P', monospace;
+  font-size:7px; letter-spacing:.5px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.tab:hover{ border-color:var(--oro); color:var(--oro-bright); transform:translateY(-3px); }
+.tab.activa{
+  background:var(--oro); color:var(--verde-oscuro);
+  border-color:var(--oro-bright);
+  box-shadow:0 0 14px rgba(224,180,60,.5);
+}
+
+@media(max-width:560px){
+  .libro{ transform:scale(.78); }
+  .escena{ gap:8px; }
+  .indice{ flex-wrap:wrap; justify-content:center; max-width:90vw; }
+}
+</style>
 </head>
+
 <body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  AUTOR Y OBRA</div>
+  <a href="index.html" class="volver">← Volver</a>
 
-  <main class="libro">
-    <img src="img/libro-abierto.png" class="fondo-libro" alt="Libro abierto" />
+  <main class="escena">
+    <!-- Si prefieres tu foto de libro, puedes poner una <img> de fondo aquí;
+         este libro está dibujado en CSS para que el volteo calce perfecto. -->
+    <div class="libro">
+      <div class="lomo"></div>
+      <div class="zona">
+        <div class="hoja papel" id="hoja"></div>
 
-    <a href="index.html" class="volver">← Volver</a>
+        <!-- hoja que voltea -->
+        <div class="flip papel" id="flip">
+          <div class="cara frente papel" id="caraFrente"></div>
+          <div class="cara dorso papel" id="caraDorso"></div>
+        </div>
+      </div>
+    </div>
 
-    <section class="pagina izquierda">
-      <h1>Juan Carlos Garay</h1>
-      <h2>Autor de <em>La nostalgia del melómano</em></h2>
-
-      <p id="textoAutor">
-        Elige una sección para seguir leyendo.
-      </p>
-    </section>
-
-    <section class="pagina derecha">
-      <button onclick="mostrar('quien')">¿Quién es?</button>
-      <button onclick="mostrar('formacion')">Formación</button>
-      <button onclick="mostrar('musica')">Relación con la música</button>
-      <button onclick="mostrar('obras')">Obras principales</button>
-      <button onclick="mostrar('melomano')">La nostalgia del melómano</button>
-    </section>
+    <div class="controles">
+      <button class="flecha" id="prev" aria-label="Anterior">◀</button>
+      <div class="indice" id="indice"></div>
+      <button class="flecha" id="next" aria-label="Siguiente">▶</button>
+    </div>
   </main>
 
-  <script src="autor.js"></script>
+<!-- ====== LÓGICA (puedes mover esto a autor.js) ====== -->
+<script>
+/* Contenido: portada + 5 secciones. parrafos = array para que se vean como párrafos reales. */
+const secciones = [
+  {
+    portada:true, tab:'Portada',
+  },
+  {
+    num:'CAP. I', tab:'¿Quién es?', titulo:'¿Quién es?',
+    parrafos:[
+      'Juan Carlos Garay Acevedo es un escritor, periodista cultural, traductor y crítico musical colombo-peruano. Nació en Lima, Perú, en 1974, pero su vida y trayectoria profesional están muy ligadas a Colombia.',
+      'Su obra se caracteriza por unir la literatura con la música. En sus novelas, la música no aparece solo como un tema decorativo, sino como una forma de memoria, identidad, refugio y sensibilidad.'
+    ]
+  },
+  {
+    num:'CAP. II', tab:'Formación', titulo:'Formación',
+    parrafos:[
+      'Garay nació en Lima, de padres colombianos, y vivió allí hasta los cuatro años. Más adelante estudió Comunicación Social y Periodismo en la Pontificia Universidad Javeriana de Bogotá entre 1991 y 1996.',
+      'Durante su paso por la universidad se acercó con fuerza al mundo de la radio. Trabajó en Javeriana Estéreo como libretista, locutor y realizador de programas dedicados al rock, el jazz y el blues. Esa experiencia lo puso en contacto con grandes colecciones de discos y ayudó a formar muchas de las ideas que después aparecerían en su primera novela.'
+    ]
+  },
+  {
+    num:'CAP. III', tab:'La música', titulo:'Relación con la música',
+    parrafos:[
+      'La música atraviesa casi toda la trayectoria de Juan Carlos Garay. Ha trabajado en radio, prensa escrita y crítica musical, especialmente alrededor del jazz, el rock, el blues, la salsa y otros sonidos latinoamericanos.',
+      'A finales de 1996 viajó a Washington para realizar estudios de periodismo cultural. Allí trabajó en La Voz de América como traductor de noticias y libretista de programas de jazz. También fue corresponsal del Magazín Dominical de El Espectador.',
+      'Desde 1999 comenzó a publicar columnas sobre música en la revista Semana, donde reseñó especialmente la escena musical colombiana. En 2008 ganó el Premio Nacional de Periodismo Simón Bolívar por una crónica sobre la salsa en Bogotá.'
+    ]
+  },
+  {
+    num:'CAP. IV', tab:'Obras', titulo:'Obras principales',
+    parrafos:[
+      'Entre sus obras narrativas se encuentran <em>La nostalgia del melómano</em> (2005), <em>La canción de la luna</em> (2011), <em>Balsa de Fuego</em> (2016) y <em>Borealis</em> (2022).',
+      'Además de sus novelas, ha desarrollado trabajos de investigación periodística relacionados con la historia musical. Uno de ellos es <em>Jazz en Bogotá</em> (2010), publicado junto con otros autores.',
+      'En sus libros suelen aparecer temas como los discos, los coleccionistas, las canciones, la radio, los músicos, la memoria y la relación emocional que las personas construyen con la música.'
+    ]
+  },
+  {
+    num:'CAP. V', tab:'El melómano', titulo:'La nostalgia del melómano',
+    parrafos:[
+      'Publicada en 2005, fue la primera novela de Juan Carlos Garay. La obra nació, en parte, de su experiencia en la radio y de su contacto con grandes colecciones de discos durante sus años en Javeriana Estéreo.',
+      'En esta novela aparecen muchas de sus obsesiones literarias y musicales: los vinilos, los coleccionistas, las grabaciones perdidas, la búsqueda de canciones, la memoria y la música como refugio personal.',
+      'También refleja la figura del melómano como alguien que no solo escucha música, sino que la persigue, la recuerda, la colecciona y la convierte en parte de su propia historia.'
+    ]
+  }
+];
+
+const hoja      = document.getElementById('hoja');
+const flip      = document.getElementById('flip');
+const caraFrente= document.getElementById('caraFrente');
+const caraDorso = document.getElementById('caraDorso');
+const indiceEl  = document.getElementById('indice');
+const btnPrev   = document.getElementById('prev');
+const btnNext   = document.getElementById('next');
+
+let actual = 0;
+let animando = false;
+const total = secciones.length;
+
+/* arma el HTML de una página */
+function htmlDe(i){
+  const s = secciones[i];
+  if(s.portada){
+    return `
+      <div class="portada">
+        <div class="sello">◈ EL COCODRILO DISCOS ◈</div>
+        <h1>Juan Carlos<br>Garay</h1>
+        <div class="sub">Autor de <em>La nostalgia del melómano</em></div>
+        <div class="orn">∿ ◆ ∿</div>
+        <div class="hint">▶ pasa la página</div>
+      </div>`;
+  }
+  const parras = s.parrafos
+    .map((p,idx)=> `<p${idx===0?' class="dropcap"':''}>${p}</p>`)
+    .join('');
+  return `
+    <div class="num-cap">${s.num}</div>
+    <h2 class="titulo-cap">${s.titulo}</h2>
+    <div class="regla"></div>
+    <div class="cuerpo">${parras}</div>
+    <div class="folio">— ${i} —</div>`;
+}
+
+/* construye el índice */
+secciones.forEach((s,i)=>{
+  if(s.portada) return;
+  const b = document.createElement('button');
+  b.className = 'tab';
+  b.textContent = s.tab;
+  b.dataset.i = i;
+  b.addEventListener('click', ()=> irA(i));
+  indiceEl.appendChild(b);
+});
+
+function actualizarUI(){
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('activa', Number(t.dataset.i)===actual);
+  });
+  btnPrev.disabled = actual===0;
+  btnNext.disabled = actual===total-1;
+}
+
+function render(i){
+  hoja.innerHTML = htmlDe(i);
+  actual = i;
+  actualizarUI();
+}
+
+function irA(i){
+  if(animando || i===actual || i<0 || i>=total) return;
+  const dir = i>actual ? 'next' : 'prev';
+  voltear(i, dir);
+}
+
+function voltear(i, dir){
+  animando = true;
+  const saliente = htmlDe(actual);
+  const entrante = htmlDe(i);
+
+  // la nueva página ya queda abajo, lista para revelarse
+  hoja.innerHTML = entrante;
+
+  if(dir==='next'){
+    caraFrente.innerHTML = saliente;  // lo que se ve al inicio (0°)
+    caraDorso.innerHTML  = entrante;  // lo que se ve al final
+    flip.style.transition='none';
+    flip.style.transform='rotateY(0deg)';
+  }else{
+    caraDorso.innerHTML  = saliente;  // se ve al inicio (-180°)
+    caraFrente.innerHTML = entrante;  // se ve al final (0°)
+    flip.style.transition='none';
+    flip.style.transform='rotateY(-180deg)';
+  }
+
+  flip.classList.add('activa');
+  void flip.offsetWidth; // fuerza reflow
+  flip.style.transition='transform .8s cubic-bezier(.42,.04,.22,1)';
+  flip.style.transform = dir==='next' ? 'rotateY(-180deg)' : 'rotateY(0deg)';
+
+  rustle();
+
+  setTimeout(()=>{
+    flip.classList.remove('activa');
+    flip.style.transition='none';
+    flip.style.transform='rotateY(0deg)';
+    caraFrente.innerHTML=''; caraDorso.innerHTML='';
+    actual = i;
+    actualizarUI();
+    animando = false;
+  }, 820);
+}
+
+/* flechas + teclado */
+btnNext.addEventListener('click', ()=> irA(actual+1));
+btnPrev.addEventListener('click', ()=> irA(actual-1));
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') irA(actual+1);
+  if(e.key==='ArrowLeft')  irA(actual-1);
+});
+
+/* ── sonido suave de pasar página (papel) ── */
+let audioCtx=null;
+function getCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+function rustle(){
+  try{
+    const ctx=getCtx(); const dur=0.2;
+    const buf=ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let k=0;k<d.length;k++){ d[k]=(Math.random()*2-1)*Math.pow(1-k/d.length,2.2); }
+    const src=ctx.createBufferSource(); src.buffer=buf;
+    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2600; bp.Q.value=.5;
+    const g=ctx.createGain(); g.gain.value=.07;
+    src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start();
+  }catch(_){}
+}
+
+/* arranque */
+render(0);
+</script>
 </body>
 </html>
