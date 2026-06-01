@@ -73,7 +73,7 @@ body::after {
   position: relative;
   width: 100vw;
   height: 100vh;
-  padding-top: 26px; /* deja espacio para la titlebar */
+  padding-top: 26px;
 }
 
 .imagen-fondo {
@@ -112,7 +112,6 @@ body::after {
   letter-spacing: 3px;
   border: none;
   cursor: pointer;
-  /* Bisel estilo botón retro */
   box-shadow:
     inset 3px 3px 0 rgba(255, 255, 255, 0.45),
     inset -3px -3px 0 rgba(0, 0, 0, 0.35),
@@ -158,143 +157,117 @@ body::after {
   50% { opacity: 0; }
 }
 
-/* ---------- Pantalla de Miranda ---------- */
-.pantalla-miranda {
+/* ---------- Pantalla interior con hotspots ---------- */
+.pantalla-interior {
   position: absolute;
   inset: 0;
-  padding: 20px 20px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 0;
 }
 
-/* Caja de diálogo: borde superior oro, bisel retro */
-.caja-dialogo {
-  width: min(900px, 90vw);
-  background-color: rgba(10, 14, 8, 0.94);
-  border: 3px solid var(--oro);
-  border-bottom: none;
-  color: var(--crema);
-  padding: 14px 20px;
-  box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.05),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.4);
+/* ---------- Hotspots ---------- */
+.hotspot {
+  position: absolute;
+  z-index: 10;
+  text-decoration: none;
+  background: transparent;
+  border: 2px solid transparent;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.nombre-personaje {
-  display: inline-block;
-  background: var(--verde);
+.hotspot:hover {
+  background: rgba(224, 180, 60, 0.10);
   border: 2px solid var(--oro);
+  box-shadow:
+    0 0 8px var(--oro),
+    0 0 20px rgba(224, 180, 60, 0.3),
+    inset 0 0 16px rgba(224, 180, 60, 0.06);
+  animation: pulso-borde 1.4s infinite;
+}
+
+@keyframes pulso-borde {
+  0%, 100% { border-color: var(--oro);     box-shadow: 0 0 8px var(--oro), 0 0 20px rgba(224,180,60,0.3); }
+  50%       { border-color: var(--verde-claro); box-shadow: 0 0 4px var(--verde-claro); }
+}
+
+/* Esquinas pixeladas decorativas */
+.hotspot::before,
+.hotspot::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.hotspot::before {
+  top: -2px; left: -2px;
+  border-top: 3px solid var(--oro);
+  border-left: 3px solid var(--oro);
+}
+.hotspot::after {
+  bottom: -2px; right: -2px;
+  border-bottom: 3px solid var(--oro);
+  border-right: 3px solid var(--oro);
+}
+.hotspot:hover::before,
+.hotspot:hover::after {
+  opacity: 1;
+}
+
+/* Cursor puntero sobre hotspot */
+.hotspot {
+  cursor: pointer;
+}
+
+/* ---------- Tooltip ---------- */
+.tooltip {
+  position: fixed;
+  z-index: 500;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.13s ease, transform 0.13s ease;
+
+  background: rgba(9, 36, 18, 0.96);
   color: var(--oro);
-  padding: 4px 12px;
-  margin-bottom: 10px;
   font-family: 'Press Start 2P', monospace;
   font-size: 9px;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 0 var(--verde-oscuro);
+  line-height: 1.7;
+  padding: 8px 14px;
+  border: 2px solid var(--oro);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+
+  /* Sombra pixel */
   box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.1),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.4);
+    4px 4px 0 rgba(0, 0, 0, 0.85),
+    0 0 10px rgba(224, 180, 60, 0.25);
+
+  /* Scanlines internas */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.15) 3px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
 }
 
-.texto-dialogo {
-  font-size: 21px;
-  line-height: 1.4;
-  color: var(--crema);
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
-  letter-spacing: 0.3px;
+.tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Cursor parpadeante al final del diálogo */
-.texto-dialogo::after {
-  content: '▮';
-  color: var(--crema);
-  animation: parpadeo-cursor 0.9s step-end infinite;
-  margin-left: 3px;
-  font-size: 18px;
-}
-
-@keyframes parpadeo-cursor {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* ---------- Opciones ---------- */
-.opciones {
-  width: min(900px, 90vw);
-  max-height: 270px;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 5px;
-  background-color: rgba(8, 12, 6, 0.97);
-  padding: 12px;
-  border: 3px solid var(--oro);
-  border-top: 2px solid rgba(224, 180, 60, 0.4);
-  box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.04),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.5),
-    4px 4px 0 rgba(0, 0, 0, 0.6);
-}
-
-/* Scrollbar retro */
-.opciones::-webkit-scrollbar {
-  width: 10px;
-}
-.opciones::-webkit-scrollbar-track {
-  background: var(--verde-oscuro);
-  border-left: 2px solid var(--verde);
-}
-.opciones::-webkit-scrollbar-thumb {
-  background: var(--oro);
-  border: 2px solid var(--verde-oscuro);
-}
-
-.opciones button {
-  text-align: left;
-  padding: 9px 12px;
-  background: rgba(248, 233, 176, 0.92);
-  color: var(--verde-oscuro);
-  border: 2px solid var(--verde);
-  font-family: 'VT323', monospace;
-  font-size: 17px;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  position: relative;
-  /* Bisel botón retro */
-  box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.45),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.25),
-    2px 2px 0 rgba(0, 0, 0, 0.5);
-  transition: background 0.08s, transform 0.08s, box-shadow 0.08s;
-}
-
-.opciones button:hover {
-  background: var(--oro-bright);
-  transform: translate(5px, 0);
-  box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.45),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.25),
-    2px 2px 0 rgba(0, 0, 0, 0.5);
-}
-
-/* Flecha selector al hacer hover */
-.opciones button:hover::before {
+/* Flecha parpadeante antes del label */
+.tooltip::before {
   content: '▶ ';
-  color: var(--verde);
-  font-size: 13px;
+  color: var(--verde-claro);
+  animation: parpadeo-cursor 0.9s step-end infinite;
 }
 
-.opciones button:active {
-  transform: translate(7px, 2px);
-  box-shadow:
-    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
-    inset -2px -2px 0 rgba(255, 255, 255, 0.1),
-    0px 0px 0 rgba(0, 0, 0, 0.5);
-}
-
-/* ---------- HUD / Status bar (opcional, añadir en HTML) ---------- */
+/* ---------- HUD / Status bar ---------- */
 .hud {
   position: absolute;
   top: 36px;
@@ -330,9 +303,15 @@ body::after {
 /* ---------- Transición de entrada ---------- */
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
-.pantalla-miranda:not(.oculto) {
+.pantalla-interior:not(.oculto) {
   animation: fadeIn 0.5s ease;
+}
+
+/* ---------- Cursor parpadeante (reutilizable) ---------- */
+@keyframes parpadeo-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
