@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Personajes | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a personajes.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Permanent+Marker&display=swap');
+
+:root{
+  --oro:#e0b43c;
+  --oro-bright:#f5ca4e;
+  --verde:#123d20;
+  --verde-claro:#1e6b3a;
+  --verde-oscuro:#0a2412;
+  --crema:#fff4c4;
+  --crema-dim:#f8e9b0;
+  --fondo:#090909;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:radial-gradient(ellipse at 50% 28%, #1c2618 0%, var(--fondo) 72%);
+  min-height:100vh; overflow:hidden;
+  font-family:'VT323','Courier New',monospace;
+  color:var(--crema);
+  display:flex; align-items:center; justify-content:center;
+}
+body::before{ /* scanlines */
+  content:''; position:fixed; inset:0; z-index:90; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.13) 2px, rgba(0,0,0,.13) 4px);
+}
+body::after{ /* vineta */
+  content:''; position:fixed; inset:0; z-index:89; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+
+/* -- Barra de titulo + Volver -- */
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px;
+  z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.9); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== ESCENA ====== */
+.escena{ display:flex; flex-direction:column; align-items:center; gap:18px; padding-top:20px; }
+
+.titulo{
+  font-family:'Press Start 2P',monospace; font-size:15px; color:var(--oro);
+  letter-spacing:2px; text-shadow:2px 2px 0 var(--verde-oscuro);
+  animation:parpadeo 1.1s step-end infinite;
+}
+@keyframes parpadeo{ 0%,100%{opacity:1} 50%{opacity:.45} }
+
+/* ====== ARENA (featured + perfil) ====== */
+.arena{ display:flex; gap:30px; align-items:flex-start; }
+
+.destacado{
+  display:flex; gap:22px;
+  background:rgba(9,36,18,.55);
+  border:2px solid var(--acc, var(--oro));
+  box-shadow:6px 6px 0 rgba(0,0,0,.6), 0 0 22px color-mix(in srgb, var(--acc,var(--oro)) 35%, transparent);
+  padding:20px; transition:border-color .3s, box-shadow .3s;
+}
+
+/* polaroid grande */
+.polaroid{
+  background:#f3efe2; padding:10px 10px 0; position:relative;
+  box-shadow:4px 6px 0 rgba(0,0,0,.55);
+  transform:rotate(-3deg);
+}
+.polaroid .cinta{
+  position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-4deg);
+  width:64px; height:22px; background:rgba(224,180,60,.4);
+  border:1px dashed rgba(120,90,30,.5);
+}
+.polaroid .foto{
+  position:relative; width:210px; height:200px; overflow:hidden;
+  background:linear-gradient(135deg, var(--acc,#888), #1a1a1a);
+  display:flex; align-items:center; justify-content:center;
+}
+.polaroid .foto img{ width:100%; height:100%; object-fit:cover; position:relative; z-index:2; }
+.polaroid .foto .ph{
+  font-family:'Press Start 2P',monospace; font-size:46px; color:rgba(255,255,255,.85);
+  text-shadow:2px 2px 0 rgba(0,0,0,.4);
+}
+.polaroid .pie{
+  font-family:'Permanent Marker', cursive; font-size:22px; color:#2a2a2a;
+  text-align:center; padding:8px 0 12px;
+}
+
+.datos{ width:250px; display:flex; flex-direction:column; }
+.datos .nombre{ font-size:34px; line-height:1; color:var(--crema); }
+.datos .epiteto{
+  font-family:'Press Start 2P',monospace; font-size:7px; letter-spacing:1px;
+  color:var(--acc,var(--oro)); margin-top:8px; line-height:1.6;
+}
+.datos .clase{
+  font-family:'Press Start 2P',monospace; font-size:6px; letter-spacing:1px;
+  color:var(--crema-dim); margin-top:8px; opacity:.85;
+}
+
+.stats{ margin-top:14px; display:flex; flex-direction:column; gap:9px; }
+.stat{ display:grid; grid-template-columns:74px 1fr 26px; align-items:center; gap:7px; }
+.stat .lbl{ font-family:'Press Start 2P',monospace; font-size:6px; color:var(--crema-dim); letter-spacing:.5px; }
+.stat .barra{
+  position:relative; height:13px; background:#0c1a10;
+  border:2px solid var(--acc,var(--oro)); overflow:hidden;
+}
+.stat .barra i{
+  display:block; height:100%; width:0;
+  background:var(--acc,var(--oro)); box-shadow:0 0 8px var(--acc,var(--oro));
+  transition:width .7s cubic-bezier(.3,.8,.25,1);
+}
+.stat .barra::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(90deg, transparent 0 7px, rgba(0,0,0,.6) 7px 9px);
+}
+.stat .val{ font-family:'Press Start 2P',monospace; font-size:7px; color:var(--acc,var(--oro)); text-align:right; }
+
+.perfil{
+  width:400px; max-height:392px; overflow-y:auto; padding-right:8px;
+  background:rgba(9,36,18,.55); border:2px solid rgba(224,180,60,.4);
+  box-shadow:6px 6px 0 rgba(0,0,0,.6); padding:18px 20px;
+}
+.perfil .ficha{ margin-bottom:14px; animation:aparece .4s ease; }
+.perfil .clave{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--oro); letter-spacing:1px; }
+.perfil .valor{ font-size:18px; line-height:1.45; color:var(--crema-dim); margin-top:5px; }
+@keyframes aparece{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+.perfil::-webkit-scrollbar{ width:7px; }
+.perfil::-webkit-scrollbar-thumb{ background:rgba(224,180,60,.4); }
+.perfil::-webkit-scrollbar-track{ background:rgba(0,0,0,.3); }
+
+/* ====== ROSTER ====== */
+.roster{ display:flex; gap:20px; }
+.slot{ position:relative; cursor:pointer; transition:transform .14s; }
+.slot:hover{ transform:translateY(-5px); }
+.slot .mini{
+  background:#f3efe2; padding:6px 6px 0; transform:rotate(-2deg);
+  box-shadow:3px 4px 0 rgba(0,0,0,.5); transition:box-shadow .15s;
+}
+.slot:nth-child(even) .mini{ transform:rotate(2deg); }
+.slot .mini .foto{
+  width:96px; height:88px; overflow:hidden;
+  background:linear-gradient(135deg, var(--acc,#888), #1a1a1a);
+  display:flex; align-items:center; justify-content:center;
+}
+.slot .mini .foto img{ width:100%; height:100%; object-fit:cover; }
+.slot .mini .foto .ph{ font-family:'Press Start 2P',monospace; font-size:22px; color:rgba(255,255,255,.85); }
+.slot .mini .pie{ font-family:'Permanent Marker',cursive; font-size:13px; color:#2a2a2a; text-align:center; padding:4px 0 7px; }
+
+.slot.activa .mini{ box-shadow:0 0 0 3px var(--acc), 0 0 18px var(--acc); }
+.slot .cursor{
+  position:absolute; top:-26px; left:50%; transform:translateX(-50%);
+  font-family:'Press Start 2P',monospace; font-size:12px; color:var(--acc,var(--oro));
+  opacity:0; animation:saltar .6s ease-in-out infinite;
+}
+.slot.activa .cursor{ opacity:1; }
+@keyframes saltar{ 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
+
+@media(max-height:780px){ .escena{ transform:scale(.86); } }
+@media(max-width:900px){
+  .arena{ flex-direction:column; align-items:center; }
+  .perfil{ width:480px; max-height:240px; }
+}
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">&#9612; EL COCODRILO DISCOS  &#9472;  EL ELENCO</div>
+  <a href="index.html?dentro=1" class="volver">&#8592; Volver</a>
+
+  <main class="escena">
+    <div class="titulo">&#9654; SELECCIONA TU PERSONAJE &#9664;</div>
+
+    <div class="arena">
+      <div class="destacado" id="destacado">
+        <div class="polaroid">
+          <div class="cinta"></div>
+          <div class="foto" id="fotoGrande">
+            <span class="ph" id="phGrande">E</span>
+          </div>
+          <div class="pie" id="pieGrande">Efe</div>
+        </div>
+
+        <div class="datos">
+          <div class="nombre" id="nombre">&#8212;</div>
+          <div class="epiteto" id="epiteto">&#8212;</div>
+          <div class="clase" id="clase">&#8212;</div>
+          <div class="stats" id="stats"></div>
+        </div>
+      </div>
+
+      <div class="perfil" id="perfil"></div>
+    </div>
+
+    <div class="roster" id="roster"></div>
+  </main>
+
+<!-- ====== LOGICA (puedes mover esto a personajes.js) ====== -->
+<script>
+const personajes = [
+  {
+    inicial:'E', img:'img/efe.png', nombre:'Francisco \u201CEfe\u201D', apodo:'Efe',
+    acc:'#e0b43c',
+    epiteto:'EL GUARDIAN DEL PASADO',
+    clase:'CLASE \u00B7 MELOMANO',
+    rol:'Protagonista \u00B7 Due\u00F1o de la tienda',
+    stats:{ Nostalgia:96, Obsesi\u00F3n:90, Misterio:30, Frescura:18, Meloman\u00EDa:98 },
+    quien:'Hombre adulto, solitario, t\u00EDmido y muy nost\u00E1lgico. Due\u00F1o de El Cocodrilo Discos, una peque\u00F1a tienda de discos antiguos en Bogot\u00E1. Su vida gira alrededor de la m\u00FAsica: los acetatos, el jazz, la salsa cl\u00E1sica y los sonidos de otra \u00E9poca.',
+    anhela:'Conservar un mundo que siente que est\u00E1 desapareciendo. Para \u00E9l los discos no son objetos, sino recuerdos, historias y formas de escapar de la realidad. Sue\u00F1a con detener el paso del tiempo, refugiarse en la m\u00FAsica y encontrar una conexi\u00F3n afectiva m\u00E1s profunda, algo que empieza a idealizar en Miranda.',
+    espera:'Que la m\u00FAsica antigua todav\u00EDa conserve un valor especial. Cree que encontrar grabaciones raras o perdidas puede darle sentido a su vida y justificar su manera de ver el mundo.',
+    conflicto:'Vive demasiado aferrado al pasado y le cuesta adaptarse al presente. La soledad y la timidez lo limitan, y encima enfrenta una situaci\u00F3n econ\u00F3mica dif\u00EDcil: su tienda no es rentable.'
+  },
+  {
+    inicial:'M', img:'img/miranda.png', nombre:'Miranda', apodo:'Miranda',
+    acc:'#38b2a8',
+    epiteto:'LA BRISA QUE ENTRO A LA TIENDA',
+    clase:'CLASE \u00B7 ESPIRITU LIBRE',
+    rol:'Asistente \u00B7 22 a\u00F1os',
+    stats:{ Nostalgia:35, Obsesi\u00F3n:28, Misterio:45, Frescura:96, Meloman\u00EDa:52 },
+    quien:'Joven de 22 a\u00F1os que trabaja como asistente en El Cocodrilo Discos. Viene de una familia acomodada y trae una energ\u00EDa distinta a la tienda: fresca y liviana frente al ambiente nost\u00E1lgico y algo detenido en el tiempo que rodea a Francisco.',
+    anhela:'Vivir de una manera m\u00E1s libre y aut\u00E9ntica, lejos de las presiones y comodidades de su entorno familiar. La tienda es para ella casi una pausa bohemia antes de entrar en una vida adulta m\u00E1s convencional.',
+    espera:'Explorar la m\u00FAsica y el mundo de los discos antiguos, pero sin la misma intensidad obsesiva con la que lo vive Efe.',
+    conflicto:'Al no cargar las mismas preocupaciones econ\u00F3micas, al principio no dimensiona la gravedad de la situaci\u00F3n de la tienda. Mientras ella lo vive con ligereza, Francisco deposita sobre ella expectativas sentimentales fuertes y silenciosas, creando una distancia entre lo que \u00E9l imagina y lo que ella quiere ofrecer.'
+  },
+  {
+    inicial:'L', img:'img/lino.png', nombre:'Lino Pe\u00F1aliza', apodo:'Lino',
+    acc:'#cf5c72',
+    epiteto:'EL VENDEDOR DE MITOS',
+    clase:'CLASE \u00B7 ENIGMA',
+    rol:'Cliente misterioso',
+    stats:{ Nostalgia:55, Obsesi\u00F3n:62, Misterio:99, Frescura:40, Meloman\u00EDa:74 },
+    quien:'Cliente misterioso que aparece en la tienda y cambia el rumbo de la historia. Llega con una supuesta grabaci\u00F3n in\u00E9dita de 1974: Cheo Feliciano cantando El Rat\u00F3n acompa\u00F1ado por un solo de guitarra el\u00E9ctrica de Eric Clapton. Enigm\u00E1tico, refinado y dif\u00EDcil de descifrar.',
+    anhela:'Crear un mito. M\u00E1s que vender un disco, quiere provocar asombro, despertar curiosidad y alterar la rutina de los coleccionistas. Su grabaci\u00F3n funciona como una leyenda musical, algo que parece estar entre la realidad y la fantas\u00EDa.',
+    espera:'Encontrar en Francisco a la persona perfecta para creer en la pieza y darle importancia. Sabe que Efe no mira los discos por su valor econ\u00F3mico, sino por su significado emocional y casi sagrado.',
+    conflicto:'Se mueve entre la genialidad y el enga\u00F1o. Nunca queda claro si representa una oportunidad real o una ilusi\u00F3n peligrosa, pero termina alimentando la obsesi\u00F3n de Francisco y golpeando a\u00FAn m\u00E1s su estabilidad emocional y econ\u00F3mica.'
+  }
+];
+
+const destacado = document.getElementById('destacado');
+const fotoGrande= document.getElementById('fotoGrande');
+const phGrande  = document.getElementById('phGrande');
+const pieGrande = document.getElementById('pieGrande');
+const nombreEl  = document.getElementById('nombre');
+const epitetoEl = document.getElementById('epiteto');
+const claseEl   = document.getElementById('clase');
+const statsEl   = document.getElementById('stats');
+const perfilEl  = document.getElementById('perfil');
+const rosterEl  = document.getElementById('roster');
+
+let actual = -1;
+
+function ponerFoto(contenedor, ph, p){
+  ph.textContent = p.inicial;
+  const vieja = contenedor.querySelector('img');
+  if(vieja) vieja.remove();
+  const img = document.createElement('img');
+  img.alt = p.nombre;
+  img.onerror = () => img.remove();
+  img.src = p.img;
+  contenedor.appendChild(img);
+}
+
+personajes.forEach((p,i)=>{
+  const slot = document.createElement('div');
+  slot.className = 'slot';
+  slot.style.setProperty('--acc', p.acc);
+  slot.dataset.i = i;
+  slot.innerHTML = `
+    <div class="cursor">&#9660;</div>
+    <div class="mini">
+      <div class="foto"><span class="ph">${p.inicial}</span></div>
+      <div class="pie">${p.apodo}</div>
+    </div>`;
+  ponerFoto(slot.querySelector('.foto'), slot.querySelector('.ph'), p);
+  slot.addEventListener('click', ()=> elegir(i));
+  rosterEl.appendChild(slot);
+});
+
+function elegir(i){
+  if(i===actual) return;
+  actual = i;
+  const p = personajes[i];
+
+  destacado.style.setProperty('--acc', p.acc);
+
+  ponerFoto(fotoGrande, phGrande, p);
+  pieGrande.textContent = p.apodo;
+
+  nombreEl.textContent = p.nombre;
+  epitetoEl.textContent = p.epiteto;
+  claseEl.textContent = p.clase;
+
+  statsEl.innerHTML = Object.entries(p.stats).map(([k,v],idx)=>`
+    <div class="stat">
+      <span class="lbl">${k}</span>
+      <div class="barra"><i data-v="${v}" style="transition-delay:${idx*0.08}s"></i></div>
+      <span class="val">${v}</span>
+    </div>`).join('');
+  requestAnimationFrame(()=>{
+    statsEl.querySelectorAll('.barra i').forEach(b=> b.style.width = b.dataset.v + '%');
+  });
+
+  perfilEl.innerHTML = `
+    <div class="ficha"><div class="clave">&#9658; QUIEN ES</div><div class="valor">${p.quien}</div></div>
+    <div class="ficha"><div class="clave">&#10022; LO QUE ANHELA</div><div class="valor">${p.anhela}</div></div>
+    <div class="ficha"><div class="clave">&#9670; LO QUE ESPERA</div><div class="valor">${p.espera}</div></div>
+    <div class="ficha"><div class="clave">&#9650; SU CONFLICTO</div><div class="valor">${p.conflicto}</div></div>`;
+  perfilEl.scrollTop = 0;
+
+  document.querySelectorAll('.slot').forEach(s=>{
+    s.classList.toggle('activa', Number(s.dataset.i)===i);
+  });
+
+  blip();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') elegir((actual+1)%personajes.length);
+  if(e.key==='ArrowLeft')  elegir((actual-1+personajes.length)%personajes.length);
+});
+
+let audioCtx=null;
+function getCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function blip(){
+  try{
+    const ctx=getCtx();
+    const osc=ctx.createOscillator(), g=ctx.createGain();
+    osc.connect(g); g.connect(ctx.destination);
+    osc.type='square';
+    osc.frequency.setValueAtTime(520, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime+0.07);
+    g.gain.setValueAtTime(0.07, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.12);
+    osc.start(); osc.stop(ctx.currentTime+0.12);
+  }catch(_){}
+}
+
+elegir(0);
+</script>
+</body>
+</html>
