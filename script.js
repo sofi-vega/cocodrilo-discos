@@ -177,3 +177,14 @@ if (new URLSearchParams(window.location.search).has("debug")) {
 
   console.info("🐊 Debug activo — hotspots visibles");
 }
+
+/* ── Diálogo de bienvenida de Miranda ── */
+const mirandaTexto = document.getElementById("mirandaTexto");
+if (mirandaTexto && !new URLSearchParams(window.location.search).has("dentro")) {
+  const msg = "Bienvenido a El Cocodrilo Discos. Yo soy Miranda. Mueve el mouse por la pantalla para descubrir tus acciones.";
+  let i = 0;
+  (function escribir(){
+    mirandaTexto.textContent = msg.slice(0, i);
+    if (i++ <= msg.length) setTimeout(escribir, 38);
+  })();
+}
