@@ -8,21 +8,52 @@
 </head>
 <body>
 
-  <main class="pantalla-inicio">
+  <main class="pantalla">
+
     <img 
-      id="imagenTienda" 
+      id="imagenEscena" 
       src="puerta-cerrada.png" 
-      alt="Entrada de El Cocodrilo Discos"
+      alt="El Cocodrilo Discos"
       class="imagen-fondo"
     />
 
     <div class="capa-oscura"></div>
 
-    <button id="botonEntrar" class="boton-entrar">
-      ENTRAR
-    </button>
+    <!-- Pantalla inicial -->
+    <section id="pantallaEntrada" class="pantalla-entrada">
+      <button id="botonEntrar" class="boton-entrar">
+        ENTRAR
+      </button>
+      <p class="texto-ayuda">Haz clic para entrar a la tienda</p>
+    </section>
 
-    <p class="texto-ayuda">Haz clic para entrar a la tienda</p>
+    <!-- Pantalla con Miranda -->
+    <section id="pantallaMiranda" class="pantalla-miranda oculto">
+
+      <div class="caja-dialogo">
+        <p class="nombre-personaje">Miranda</p>
+        <p id="textoMiranda" class="texto-dialogo">
+          Hola, soy Miranda. Bienvenido a El Cocodrilo Discos. 
+          ¿Qué estás buscando hoy?
+        </p>
+      </div>
+
+      <div class="opciones">
+        <button>📀 Quiero conocer al autor y su obra.</button>
+        <button>📖 Quiero que me cuentes la historia del libro.</button>
+        <button>👥 Quiero saber quiénes son los personajes y qué buscan.</button>
+        <button>🇨🇴 Quiero entender la Colombia donde ocurre el relato.</button>
+        <button>🎧 Quiero escuchar la banda sonora del libro.</button>
+        <button>🎸 Quiero saber si música y literatura se mezclan bien.</button>
+        <button>📰 Quiero entender el contexto social que muestra el autor.</button>
+        <button>💬 Quiero hablar sobre si el rock y los libros siguen vivos hoy.</button>
+        <button>⭐ Quiero una recomendación de rock colombiano e internacional.</button>
+        <button>📚 Quiero una recomendación de libros colombianos e internacionales.</button>
+        <button>🔎 Quiero ver la bibliografía y las fuentes.</button>
+      </div>
+
+    </section>
+
   </main>
 
   <audio id="sonidoCampana" src="campana.mp3"></audio>
