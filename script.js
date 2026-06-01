@@ -178,13 +178,26 @@ if (new URLSearchParams(window.location.search).has("debug")) {
   console.info("🐊 Debug activo — hotspots visibles");
 }
 
-/* ── Diálogo de bienvenida de Miranda ── */
+/* ── Diálogo de bienvenida de Miranda (al entrar a la tienda) ── */
 const mirandaTexto = document.getElementById("mirandaTexto");
-if (mirandaTexto && !new URLSearchParams(window.location.search).has("dentro")) {
+
+function escribirMiranda() {
+  if (!mirandaTexto || mirandaTexto.dataset.listo) return; // no repetir
+  mirandaTexto.dataset.listo = "1";
   const msg = "Bienvenido a El Cocodrilo Discos. Yo soy Miranda. Mueve el mouse por la pantalla para descubrir tus acciones.";
   let i = 0;
   (function escribir(){
     mirandaTexto.textContent = msg.slice(0, i);
     if (i++ <= msg.length) setTimeout(escribir, 38);
   })();
+}
+
+if (pantallaInterior) {
+  // arranca cuando el interior se hace visible (al entrar por el botón)
+  const obs = new MutationObserver(() => {
+    if (!pantallaInterior.classList.contains("oculto")) { escribirMiranda(); obs.disconnect(); }
+  });
+  obs.observe(pantallaInterior, { attributes: true, attributeFilter: ["class"] });
+  // o si ya está visible al cargar (al volver con ?dentro=1)
+  if (!pantallaInterior.classList.contains("oculto")) escribirMiranda();
 }
