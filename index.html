@@ -1,78 +1,179 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>El Cocodrilo Discos</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <main class="pantalla">
-    <img 
-      id="imagenEscena" 
-      src="img/puerta-cerrada.png" 
-      alt="El Cocodrilo Discos"
-      class="imagen-fondo"
-    />
+/* =========================================
+   EL COCODRILO DISCOS — script.js
+   ========================================= */
 
-    <div class="capa-oscura"></div>
+const botonEntrar      = document.getElementById("botonEntrar");
+const imagenEscena     = document.getElementById("imagenEscena");
+const sonidoCampana    = document.getElementById("sonidoCampana");
+const pantallaEntrada  = document.getElementById("pantallaEntrada");
+const pantallaInterior = document.getElementById("pantallaInterior");
+const tooltip          = document.getElementById("tooltip");
 
-    <section id="pantallaEntrada" class="pantalla-entrada">
-      <button id="botonEntrar" class="boton-entrar">ENTRAR</button>
-      <p class="texto-ayuda">Haz clic para entrar a la tienda</p>
-    </section>
+/* ── Entrada a la tienda ── */
+botonEntrar.addEventListener("click", () => {
+  sonidoCampana.currentTime = 0;
+  sonidoCampana.play().catch(() => {});
 
-    <section id="pantallaInterior" class="pantalla-interior oculto">
+  pantallaEntrada.classList.add("desaparecer");
+  imagenEscena.classList.add("entrando");
 
-      <a href="autor.html" class="hotspot" id="autor"
-         data-label="📚 Autor y obra"
-         style="left:3%; top:4%; width:20%; height:32%"></a>
+  // 1. Primero muestra la puerta abierta
+  setTimeout(() => {
+    imagenEscena.src = "img/puerta-abierta.png";
+  }, 600);
 
-      <a href="personajes.html" class="hotspot" id="personajes"
-         data-label="🖼️ Personajes principales"
-         style="left:23%; top:13%; width:13%; height:27%"></a>
+  // 2. Luego muestra el interior de la tienda
+  setTimeout(() => {
+    imagenEscena.src = "img/interior-tienda.png";
+  }, 1900);
 
-      <a href="historia.html" class="hotspot" id="historia"
-         data-label="💿 Historia del libro"
-         style="left:2%; top:42%; width:23%; height:25%"></a>
+  // 3. Después activa los botones flotantes
+  setTimeout(() => {
+    imagenEscena.classList.remove("entrando");
+    pantallaEntrada.classList.add("oculto");
+    pantallaInterior.classList.remove("oculto");
+  }, 2600);
+});
 
-      <a href="conversar.html" class="hotspot" id="miranda"
-         data-label="💬 Conversar con Miranda"
-         style="left:37%; top:24%; width:24%; height:35%"></a>
+/* ── Si venimos de otra página (ej. Volver), entrar directo al interior ── */
+if (new URLSearchParams(window.location.search).has("dentro")) {
+  imagenEscena.src = "img/interior-tienda.png";
+  pantallaEntrada.classList.add("oculto");
+  pantallaInterior.classList.remove("oculto");
+}
 
-      <a href="contexto.html" class="hotspot" id="contexto"
-         data-label="📰 Contexto político y social"
-         style="left:58%; top:6%; width:15%; height:35%"></a>
+/* ── Tooltip follow-mouse ── */
+let mouseX = 0, mouseY = 0;
 
-      <a href="banda-sonora.html" class="hotspot" id="rockola"
-         data-label="🎵 Banda sonora"
-         style="left:72%; top:20%; width:13%; height:38%"></a>
+document.addEventListener("mousemove", e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  if (tooltip.classList.contains("visible")) posicionarTooltip();
+});
 
-      <a href="musica-literatura.html" class="hotspot" id="sofa"
-         data-label="🎸 Música y literatura"
-         style="left:82%; top:28%; width:16%; height:28%"></a>
+function posicionarTooltip() {
+  const pad  = 18;
+  const tipW = tooltip.offsetWidth;
+  const tipH = tooltip.offsetHeight;
+  const vpW  = window.innerWidth;
+  const vpH  = window.innerHeight;
 
-      <a href="panorama-social.html" class="hotspot" id="gavetas"
-         data-label="🇨🇴 Panorama social colombiano"
-         style="left:0%; top:65%; width:19%; height:27%"></a>
+  let x = mouseX + pad;
+  let y = mouseY - tipH - pad;
 
-      <a href="recomendaciones-musica.html" class="hotspot" id="vinilos"
-         data-label="⭐ Recomendaciones musicales"
-         style="left:25%; top:70%; width:24%; height:20%"></a>
+  if (x + tipW > vpW - 8) x = mouseX - tipW - pad;
+  if (y < 34) y = mouseY + pad;
 
-      <a href="recomendaciones-libros.html" class="hotspot" id="libros"
-         data-label="📚 Recomendaciones literarias"
-         style="left:50%; top:70%; width:22%; height:20%"></a>
+  tooltip.style.left = x + "px";
+  tooltip.style.top  = y + "px";
+}
 
-      <a href="bibliografia.html" class="hotspot" id="computador"
-         data-label="💾 Bibliografía y fuentes"
-         style="left:78%; top:63%; width:20%; height:30%"></a>
+/* ── Bind hotspots ── */
+const hotspots = document.querySelectorAll(".hotspot");
 
-      <div class="tooltip" id="tooltip"></div>
-    </section>
-  </main>
+hotspots.forEach(spot => {
+  const label = spot.dataset.label || "";
 
-  <audio id="sonidoCampana" src="audio/campana.mp3"></audio>
-  <script src="script.js"></script>
-</body>
-</html>
+  spot.addEventListener("mouseenter", () => {
+    tooltip.textContent = label;
+    tooltip.classList.add("visible");
+    posicionarTooltip();
+    playBeep();
+  });
+
+  spot.addEventListener("mousemove", posicionarTooltip);
+
+  spot.addEventListener("mouseleave", () => {
+    tooltip.classList.remove("visible");
+  });
+
+  spot.addEventListener("click", e => {
+    const href = spot.getAttribute("href");
+    if (href) {
+      e.preventDefault();
+      playClick();
+      setTimeout(() => {
+        window.location.href = href;
+      }, 130);
+    }
+  });
+});
+
+/* ── Sonidos retro 8-bit ── */
+let audioCtx = null;
+
+function getCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+
+function playBeep() {
+  try {
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+
+    osc.connect(g);
+    g.connect(ctx.destination);
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(440, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.05);
+
+    g.gain.setValueAtTime(0.06, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.12);
+  } catch (_) {}
+}
+
+function playClick() {
+  try {
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+
+    osc.connect(g);
+    g.connect(ctx.destination);
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.08);
+
+    g.gain.setValueAtTime(0.10, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.15);
+  } catch (_) {}
+}
+
+/* ── Modo debug: añade ?debug a la URL ── */
+if (new URLSearchParams(window.location.search).has("debug")) {
+  hotspots.forEach(s => {
+    s.style.border     = "2px dashed rgba(224,180,60,0.8)";
+    s.style.background = "rgba(224,180,60,0.12)";
+
+    const tag = document.createElement("span");
+    tag.textContent = s.id;
+    tag.style.cssText = `
+      position:absolute;
+      top:3px;
+      left:4px;
+      font-family:'Press Start 2P', monospace;
+      font-size:7px;
+      color:#fff4c4;
+      background:rgba(0,0,0,0.75);
+      padding:2px 5px;
+      pointer-events:none;
+      z-index:999;
+    `;
+
+    s.appendChild(tag);
+  });
+
+  console.info("🐊 Debug activo — hotspots visibles");
+}
