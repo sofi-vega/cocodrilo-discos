@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autor y obra | El Cocodrilo Discos</title>
+  <link rel="stylesheet" href="autor.css" />
+</head>
+<body>
+
+  <main class="libro">
+    <img src="img/libro-abierto.png" class="fondo-libro" alt="Libro abierto" />
+
+    <a href="index.html" class="volver">← Volver</a>
+
+    <section class="pagina izquierda">
+      <h1>Juan Carlos Garay</h1>
+      <h2>Autor de <em>La nostalgia del melómano</em></h2>
+
+      <p id="textoAutor">
+        Abres el libro y encuentras una primera nota sobre el autor.
+        Elige una sección para seguir leyendo.
+      </p>
+    </section>
+
+    <section class="pagina derecha">
+      <button onclick="mostrar('quien')">¿Quién es?</button>
+      <button onclick="mostrar('formacion')">Formación</button>
+      <button onclick="mostrar('musica')">Relación con la música</button>
+      <button onclick="mostrar('obras')">Obras principales</button>
+      <button onclick="mostrar('melomano')">La nostalgia del melómano</button>
+    </section>
+  </main>
+
+  <script src="autor.js"></script>
+</body>
+</html>
