@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Banda sonora | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a banda-sonora.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root{
+  --oro:#e0b43c; --oro-bright:#f5ca4e;
+  --verde:#123d20; --verde-claro:#1e6b3a; --verde-oscuro:#0a2412;
+  --crema:#fff4c4; --crema-dim:#f8e9b0; --fondo:#090909;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:radial-gradient(ellipse at 50% 24%, #1c2618 0%, var(--fondo) 72%);
+  min-height:100vh; overflow-y:auto;
+  font-family:'VT323','Courier New',monospace; color:var(--crema);
+  display:flex; align-items:center; justify-content:center;
+  padding:50px 16px 46px;
+}
+body::before{ content:''; position:fixed; inset:0; z-index:90; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.13) 2px, rgba(0,0,0,.13) 4px); }
+body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,.5) 100%); }
+
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px; z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+.escena{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+.titulo{ font-family:'Press Start 2P',monospace; font-size:14px; color:var(--oro); letter-spacing:2px; text-shadow:2px 2px 0 var(--verde-oscuro); }
+.subt{ font-size:19px; color:var(--crema-dim); text-align:center; max-width:640px; line-height:1.2; }
+
+.rockola{ position:relative; width:580px; max-width:94vw; margin-top:6px; }
+.tubo{ position:absolute; top:24px; width:18px; height:300px; border-radius:10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.15), rgba(0,0,0,.4)); border:2px solid #2a2a2a; overflow:hidden; }
+.tubo.izq{ left:-26px; } .tubo.der{ right:-26px; }
+.tubo::after{ content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 90%, var(--oro-bright) 2px, transparent 3px),
+            radial-gradient(circle at 50% 60%, #e0533c 2px, transparent 3px),
+            radial-gradient(circle at 50% 30%, #3aa85a 2px, transparent 3px);
+  background-size:100% 70px; animation:burbujas 2.4s linear infinite; opacity:.8; }
+@keyframes burbujas{ from{background-position:0 0;} to{background-position:0 -70px;} }
+
+.domo{ height:96px; border-radius:280px 280px 0 0;
+  background:linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+  border:3px solid #444; border-bottom:none; position:relative; overflow:hidden; box-shadow:inset 0 0 30px rgba(0,0,0,.7); }
+.arco{ position:absolute; left:50%; bottom:0; transform:translateX(-50%); border-style:solid; border-color:transparent; border-bottom:none; border-radius:50%; opacity:.85; animation:brillo 2.2s ease-in-out infinite; }
+.arco.a1{ width:360px; height:200px; border-width:10px; border-top-color:var(--oro); }
+.arco.a2{ width:280px; height:155px; border-width:10px; border-top-color:#e0533c; animation-delay:.4s; }
+.arco.a3{ width:200px; height:112px; border-width:10px; border-top-color:#3aa85a; animation-delay:.8s; }
+@keyframes brillo{ 0%,100%{filter:drop-shadow(0 0 3px currentColor); opacity:.6;} 50%{filter:drop-shadow(0 0 9px currentColor); opacity:1;} }
+.domo .logo{ position:absolute; top:30px; left:50%; transform:translateX(-50%); z-index:2; font-family:'Press Start 2P',monospace; font-size:11px; color:var(--crema); letter-spacing:2px; text-shadow:2px 2px 0 #000; }
+
+.cristal{ position:relative; height:250px; overflow:hidden;
+  background:linear-gradient(180deg, #0a1f12, #061009); border:3px solid #444; box-shadow:inset 0 0 40px rgba(0,0,0,.85); }
+.cristal::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:3;
+  background:linear-gradient(120deg, rgba(255,255,255,.08) 0 18%, transparent 30%); }
+
+/* reproductor de YouTube oculto (suena pero no se ve) */
+.audio-yt{ position:absolute; inset:0; width:100%; height:100%; border:0; opacity:0; pointer-events:none; z-index:0; }
+
+.rack{ position:absolute; left:18px; top:34px; bottom:34px; width:80px; z-index:1;
+  background:repeating-linear-gradient(90deg, #1a1a1a 0 4px, #2c2c2c 4px 7px); border:2px solid #000; transform:perspective(300px) rotateY(18deg); opacity:.7; }
+.plato{ position:absolute; top:50%; right:90px; transform:translateY(-50%); z-index:2;
+  width:188px; height:188px; border-radius:50%; background:repeating-radial-gradient(circle, #2a2a2a 0 1px, #1d1d1d 1px 3px); box-shadow:0 0 0 5px #141414, inset 0 0 24px rgba(0,0,0,.7); }
+.disco{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:176px; height:176px; border-radius:50%;
+  background:repeating-radial-gradient(circle, #0c0c0c 0 2px, #191919 2px 4px); box-shadow:inset 0 0 22px rgba(0,0,0,.9); }
+.disco.girando{ animation:girar 2s linear infinite; }
+@keyframes girar{ to{ transform:translate(-50%,-50%) rotate(360deg);} }
+.etiqueta{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:66px; height:66px; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-align:center; box-shadow:inset 0 0 10px rgba(0,0,0,.5); transition:background .3s; }
+.etiqueta b{ font-family:'Press Start 2P',monospace; font-size:13px; }
+.etiqueta span{ font-size:13px; line-height:1; margin-top:3px; opacity:.9; }
+.hueco{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:7px; height:7px; border-radius:50%; background:#000; }
+.brazo{ position:absolute; top:30px; right:60px; width:7px; height:130px; z-index:2;
+  background:linear-gradient(180deg,#eee,#888); border:1px solid #555; transform-origin:top center; transform:rotate(30deg); transition:transform .6s cubic-bezier(.4,.1,.2,1); }
+.brazo.tocando{ transform:rotate(8deg); }
+.brazo::before{ content:''; position:absolute; top:-12px; left:-9px; width:24px; height:24px; border-radius:50%; background:radial-gradient(circle at 35% 35%, #f0d27a, #9a7820); border:2px solid #6a5215; }
+.brazo::after{ content:''; position:absolute; bottom:-6px; left:-6px; width:18px; height:12px; background:#222; border:1px solid #000; transform:rotate(-30deg); }
+
+.display{ width:580px; max-width:94vw; background:rgba(7,26,14,.95); border:3px solid var(--oro); border-top:none; padding:14px 18px; display:flex; align-items:center; gap:16px; }
+.codigo{ font-family:'Press Start 2P',monospace; font-size:20px; color:var(--oro-bright); border:2px solid var(--oro); padding:8px 10px; min-width:54px; text-align:center; }
+.np{ flex:1; }
+.np .art{ font-family:'Press Start 2P',monospace; font-size:10px; color:var(--crema); letter-spacing:1px; }
+.np .song{ font-size:23px; color:var(--oro); font-style:italic; margin-top:3px; }
+.np .estilo{ font-size:16px; color:var(--crema-dim); margin-top:2px; }
+.eq{ display:flex; gap:3px; align-items:flex-end; height:26px; }
+.eq span{ width:5px; height:4px; background:var(--oro); animation:eq .6s ease-in-out infinite; }
+.eq span:nth-child(2){animation-delay:.15s} .eq span:nth-child(3){animation-delay:.3s}
+.eq span:nth-child(4){animation-delay:.08s} .eq span:nth-child(5){animation-delay:.22s}
+@keyframes eq{ 0%,100%{height:4px} 50%{height:26px} }
+.escuchar{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--verde-oscuro); background:var(--oro); border:2px solid var(--oro-bright); padding:8px 10px; text-decoration:none; letter-spacing:1px; white-space:nowrap; cursor:pointer; }
+.escuchar:hover{ background:var(--oro-bright); }
+
+.selector{ width:580px; max-width:94vw; margin-top:14px; display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.pista{ display:flex; gap:10px; align-items:center; cursor:pointer; background:rgba(255,255,255,.04); border:2px solid #3a3a3a; padding:8px 10px; transition:all .13s; }
+.pista:hover{ border-color:var(--oro); background:rgba(224,180,60,.08); }
+.pista.activa{ border-color:var(--oro-bright); background:rgba(224,180,60,.16); box-shadow:0 0 12px rgba(224,180,60,.4); }
+.pista .cod{ font-family:'Press Start 2P',monospace; font-size:11px; color:var(--oro); min-width:26px; }
+.pista .info b{ display:block; font-size:18px; color:var(--crema); line-height:1.1; }
+.pista .info span{ font-size:15px; color:var(--crema-dim); font-style:italic; }
+
+@media(max-width:640px){ .rockola, .display, .selector{ width:96vw; } .selector{ grid-template-columns:1fr; } .tubo{ display:none; } }
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  BANDA SONORA</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <main class="escena">
+    <div class="titulo">🎵 ROCKOLA EL COCODRILO</div>
+    <div class="subt">¿Qué música suena en las páginas de <em>La nostalgia del melómano</em>? Elige una pista.</div>
+
+    <div class="rockola">
+      <div class="tubo izq"></div>
+      <div class="tubo der"></div>
+      <div class="domo">
+        <div class="arco a1"></div><div class="arco a2"></div><div class="arco a3"></div>
+        <div class="logo">SELECTOR</div>
+      </div>
+      <div class="cristal">
+        <!-- reproductor real (oculto): suena al elegir una pista con ID de YouTube -->
+        <iframe class="audio-yt" id="ytFrame" src="" allow="autoplay; encrypted-media" title="reproductor"></iframe>
+        <div class="rack"></div>
+        <div class="brazo" id="brazo"></div>
+        <div class="plato">
+          <div class="disco" id="disco">
+            <div class="etiqueta" id="etiqueta"><b id="etCod">A1</b><span id="etArt"></span></div>
+            <div class="hueco"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="display">
+      <div class="codigo" id="codigo">A1</div>
+      <div class="np">
+        <div class="art" id="npArt">—</div>
+        <div class="song" id="npSong">—</div>
+        <div class="estilo" id="npEstilo">—</div>
+      </div>
+      <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
+      <a class="escuchar" id="escuchar" target="_blank" rel="noopener">♪ YOUTUBE</a>
+    </div>
+
+    <div class="selector" id="selector"></div>
+  </main>
+
+<!-- ====== LÓGICA (puedes mover esto a banda-sonora.js) ====== -->
+<script>
+/* ==========================================================================
+   PARA QUE SUENE:  pega el ID de YouTube de cada canción en el campo "yt".
+   El ID es lo que va después de  watch?v=  en la URL.
+   Ej: https://www.youtube.com/watch?v=dQw4w9WgXcQ  ->  yt:'dQw4w9WgXcQ'
+   Si dejas yt vacío, el botón ♪ YOUTUBE igual abre la búsqueda de la canción.
+   ========================================================================== */
+const pistas = [
+  { cod:'A1', art:'Cheo Feliciano',              estilo:'Salsa / bolero / son latino',           cancion:'El ratón',                 color:'#e0533c', yt:'1q4icTc0gOY' },
+  { cod:'A2', art:'Eric Clapton',                estilo:'Blues rock / rock clásico',             cancion:'I shot the Sheriff',      color:'#e0b43c', yt:'L0xLLPJ0bOw&list=OLAK5uy_mRNqiK0VmtIOAB6WT9y9AkbOUwSa-0WiY' },
+  { cod:'A3', art:'J. S. Bach / Wanda Landowska',estilo:'Música barroca / clásica',              cancion:'Variaciones Goldberg',     color:'#6a7fd0', yt:'15ezpwCHtJs' },
+  { cod:'A4', art:'Édith Piaf',                  estilo:'Chanson française',                     cancion:'Non, je ne regrette rien', color:'#c060a0', yt:'Q3Kvu6Kgp88' },
+  { cod:'A5', art:'Ludwig van Beethoven',        estilo:'Clásica / romanticismo temprano',       cancion:'Sonatas tardías',          color:'#6a7fd0', yt:'nS3YwjOAekc&list=PLWWK8aRuZ32nImq8GDsuwc-JkxnqSClsJ' },
+  { cod:'B1', art:'The Beatles',                 estilo:'Rock / pop rock',                       cancion:'Yesterday',                color:'#e0b43c', yt:'NrgmdOz227I' },
+  { cod:'B2', art:'Deep Purple',                 estilo:'Hard rock / rock clásico',              cancion:'Smoke on the Water',       color:'#d08030', yt:'Rfirxs_NUcE' },
+  { cod:'B3', art:'Gustav Mahler',               estilo:'Clásica / sinfonismo romántico tardío', cancion:'La canción de la tierra',  color:'#6a7fd0', yt:'L1TWuu1rhiM' },
+  { cod:'B4', art:'Joan Manuel Serrat',          estilo:'Canción de autor / trova',              cancion:'Malas compañías',          color:'#4aa86a', yt:'i4SbA1jG3YE' },
+  { cod:'B5', art:'Ludwig van Beethoven',        estilo:'Clásica / música de cámara',            cancion:'Sonata Op. 69',            color:'#6a7fd0', yt:'HjiIUOKUJpk' }
+];
+
+const disco=document.getElementById('disco'), brazo=document.getElementById('brazo'),
+      etiqueta=document.getElementById('etiqueta'), etCod=document.getElementById('etCod'),
+      etArt=document.getElementById('etArt'), codigo=document.getElementById('codigo'),
+      npArt=document.getElementById('npArt'), npSong=document.getElementById('npSong'),
+      npEstilo=document.getElementById('npEstilo'), escuchar=document.getElementById('escuchar'),
+      selector=document.getElementById('selector'), ytFrame=document.getElementById('ytFrame');
+
+let actual=-1;
+
+pistas.forEach((p,i)=>{
+  const b=document.createElement('div'); b.className='pista'; b.dataset.i=i;
+  b.innerHTML=`<div class="cod">${p.cod}</div><div class="info"><b>${p.art}</b><span>${p.cancion}</span></div>`;
+  b.addEventListener('click', ()=> poner(i, true));
+  selector.appendChild(b);
+});
+
+function poner(i, sonar){
+  if(i===actual) return;
+  actual=i; const p=pistas[i];
+
+  brazo.classList.remove('tocando'); disco.classList.remove('girando'); void disco.offsetWidth;
+
+  etiqueta.style.background=`radial-gradient(circle at 35% 35%, ${p.color}, rgba(0,0,0,.4))`;
+  etCod.textContent=p.cod; etArt.textContent=p.art.split(' ')[0];
+
+  codigo.textContent=p.cod; npArt.textContent=p.art; npSong.textContent=p.cancion; npEstilo.textContent=p.estilo;
+  escuchar.href='https://www.youtube.com/results?search_query='+encodeURIComponent(p.art+' '+p.cancion);
+
+  document.querySelectorAll('.pista').forEach(s=> s.classList.toggle('activa', Number(s.dataset.i)===i));
+
+  // suena de verdad si hay ID de YouTube
+  if(sonar){
+    if(p.yt){ ytFrame.src=`https://www.youtube.com/embed/${p.yt}?autoplay=1&rel=0`; }
+    else    { ytFrame.src=''; }
+  }
+
+  clunk();
+  setTimeout(()=>{ disco.classList.add('girando'); brazo.classList.add('tocando'); needle(); }, 380);
+}
+
+let audioCtx=null;
+function getCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function clunk(){ try{ const ctx=getCtx(); const o=ctx.createOscillator(), g=ctx.createGain();
+  o.connect(g); g.connect(ctx.destination); o.type='triangle';
+  o.frequency.setValueAtTime(140,ctx.currentTime); o.frequency.exponentialRampToValueAtTime(60,ctx.currentTime+.12);
+  g.gain.setValueAtTime(.12,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.18);
+  o.start(); o.stop(ctx.currentTime+.18);}catch(_){} }
+function needle(){ try{ const ctx=getCtx(); const dur=.25;
+  const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate); const d=buf.getChannelData(0);
+  for(let k=0;k<d.length;k++){ d[k]=(Math.random()*2-1)*Math.pow(1-k/d.length,1.4)*.5; }
+  const src=ctx.createBufferSource(); src.buffer=buf; const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=2000;
+  const g=ctx.createGain(); g.gain.value=.05; src.connect(hp); hp.connect(g); g.connect(ctx.destination); src.start();}catch(_){} }
+
+/* arranca mostrando la primera pista, sin reproducir audio (eso requiere un clic) */
+poner(0, false);
+</script>
+</body>
+</html>
