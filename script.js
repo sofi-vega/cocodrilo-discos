@@ -32,6 +32,7 @@ botonEntrar.addEventListener("click", () => {
     imagenEscena.classList.remove("entrando");
     pantallaEntrada.classList.add("oculto");
     pantallaInterior.classList.remove("oculto");
+    document.getElementById("audioAmbiente").play().catch(() => {});
   }, 2600);
 });
 
@@ -40,6 +41,7 @@ if (new URLSearchParams(window.location.search).has("dentro")) {
   imagenEscena.src = "img/interior-tienda.png";
   pantallaEntrada.classList.add("oculto");
   pantallaInterior.classList.remove("oculto");
+  document.getElementById("audioAmbiente").play().catch(() => {});
 }
 
 /* ── Tooltip follow-mouse ── */
