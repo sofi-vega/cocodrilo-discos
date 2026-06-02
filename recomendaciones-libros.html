@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recomendaciones literarias | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a recomendaciones-libros.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root{
+  --oro:#e0b43c; --oro-bright:#f5ca4e;
+  --verde:#123d20; --verde-claro:#1e6b3a; --verde-oscuro:#0a2412; --crema:#fff4c4;
+  --papel-1:#f6e8c6; --papel-2:#e7d09c; --papel-borde:#cdb277;
+  --tinta:#3a2410; --tinta-suave:#6a4a26; --fondo:#090909;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{ background:radial-gradient(ellipse at 50% 38%, #2a2012 0%, var(--fondo) 70%);
+  min-height:100vh; overflow:hidden; font-family:'EB Garamond', Georgia, serif; color:var(--tinta);
+  display:flex; align-items:center; justify-content:center; }
+body::after{ content:''; position:fixed; inset:0; background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.5) 100%); pointer-events:none; z-index:50; }
+
+.barra-titulo{ position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px; z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro); }
+.volver{ position:fixed; top:38px; left:24px; z-index:60; padding:9px 15px;
+  background:rgba(18,61,32,.9); color:var(--crema); border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px; box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s; }
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+.escena{ display:flex; flex-direction:column; align-items:center; gap:26px; }
+
+/* ── LIBRO ── */
+.libro{ position:relative; width:520px; height:600px; perspective:2400px; filter:drop-shadow(0 30px 45px rgba(0,0,0,.6)); }
+.lomo{ position:absolute; left:0; top:0; bottom:0; width:78px;
+  background:linear-gradient(90deg, #2a1a0c 0%, #4a3015 40%, #3a2410 100%); border:2px solid #1c1107; border-right:none; box-shadow:inset -6px 0 14px rgba(0,0,0,.55); }
+.lomo::before{ content:''; position:absolute; inset:8px 6px 8px 14px; background:repeating-linear-gradient(180deg, #e9d6a8 0 3px, #cdb277 3px 5px); opacity:.85; box-shadow:inset 0 0 6px rgba(0,0,0,.3); }
+.zona{ position:absolute; left:74px; top:0; width:440px; height:600px; transform-style:preserve-3d; }
+.zona::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:60px; background:linear-gradient(90deg, rgba(0,0,0,.45), transparent); z-index:6; pointer-events:none; }
+.papel{ background:linear-gradient(135deg, var(--papel-1), var(--papel-2)); border:2px solid var(--papel-borde); box-shadow:inset 0 0 40px rgba(120,90,40,.18); }
+.papel::after{ content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(120,90,40,.04) 0 2px, transparent 2px 4px); pointer-events:none; }
+.hoja{ position:absolute; inset:0; padding:54px 46px 48px; display:flex; flex-direction:column; overflow:hidden; }
+.flip{ position:absolute; inset:0; transform-origin:left center; transform-style:preserve-3d; z-index:8; display:none; }
+.flip.activa{ display:block; }
+.cara{ position:absolute; inset:0; padding:54px 46px 48px; backface-visibility:hidden; display:flex; flex-direction:column; overflow:hidden; }
+.cara.dorso{ transform:rotateY(180deg); }
+.flip.activa .cara::before{ content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.28), transparent 45%); pointer-events:none; }
+
+.num-cap{ font-family:'Press Start 2P',monospace; font-size:11px; color:var(--oro); letter-spacing:2px; margin-bottom:6px; text-shadow:1px 1px 0 rgba(0,0,0,.15); }
+.titulo-cap{ font-size:30px; font-weight:600; line-height:1.05; color:var(--tinta); margin-bottom:4px; }
+.meta-cap{ font-style:italic; font-size:18px; color:var(--tinta-suave); margin-bottom:12px; }
+.regla{ width:70px; height:3px; margin-bottom:16px; background:linear-gradient(90deg, var(--oro), transparent); }
+.cuerpo{ overflow-y:auto; padding-right:6px; }
+.cuerpo p{ font-size:17px; line-height:1.6; margin-bottom:12px; text-align:justify; color:#34230f; }
+.dropcap:first-letter{ float:left; font-size:52px; line-height:.8; padding:4px 8px 0 0; color:var(--oro); font-weight:600; }
+.cuerpo em{ font-style:italic; }
+.cuerpo::-webkit-scrollbar{ width:6px; } .cuerpo::-webkit-scrollbar-thumb{ background:rgba(160,120,50,.45); border-radius:3px; } .cuerpo::-webkit-scrollbar-track{ background:transparent; }
+.folio{ margin-top:auto; padding-top:10px; text-align:center; font-family:'Press Start 2P',monospace; font-size:8px; color:var(--tinta-suave); letter-spacing:1px; }
+
+.portada{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:50px 40px; }
+.portada .sello{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--oro); letter-spacing:2px; margin-bottom:22px; }
+.portada h1{ font-size:40px; font-weight:600; line-height:1.05; color:var(--tinta); }
+.portada .sub{ font-size:19px; font-style:italic; color:var(--tinta-suave); margin-top:14px; }
+.portada .orn{ margin:26px 0; color:var(--oro); font-size:20px; letter-spacing:8px; }
+.portada .hint{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--tinta-suave); letter-spacing:1px; margin-top:6px; animation:parpadeo 1.5s step-end infinite; }
+@keyframes parpadeo{ 0%,100%{opacity:.85} 50%{opacity:.25} }
+
+.controles{ display:flex; align-items:center; gap:14px; }
+.flecha{ width:46px; height:46px; display:flex; align-items:center; justify-content:center;
+  background:rgba(18,61,32,.9); border:2px solid var(--oro); color:var(--oro); font-size:18px; cursor:pointer;
+  box-shadow:3px 3px 0 rgba(0,0,0,.6); transition:transform .12s, background .12s, opacity .2s; }
+.flecha:hover:not([disabled]){ transform:translate(-2px,-2px); background:var(--verde-claro); color:var(--oro-bright); }
+.flecha[disabled]{ opacity:.28; cursor:default; }
+.indice{ display:flex; gap:8px; }
+.tab{ padding:8px 12px; background:rgba(40,25,12,.55); border:2px solid transparent; border-bottom-color:rgba(224,180,60,.35);
+  color:var(--crema); font-family:'Press Start 2P',monospace; font-size:7px; letter-spacing:.5px; cursor:pointer; transition:all .15s; }
+.tab:hover{ border-color:var(--oro); color:var(--oro-bright); transform:translateY(-3px); }
+.tab.activa{ background:var(--oro); color:var(--verde-oscuro); border-color:var(--oro-bright); box-shadow:0 0 14px rgba(224,180,60,.5); }
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  RECOMENDACIONES LITERARIAS</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <main class="escena">
+    <div class="libro">
+      <div class="lomo"></div>
+      <div class="zona">
+        <div class="hoja papel" id="hoja"></div>
+        <div class="flip papel" id="flip">
+          <div class="cara frente papel" id="caraFrente"></div>
+          <div class="cara dorso papel" id="caraDorso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controles">
+      <button class="flecha" id="prev" aria-label="Anterior">◀</button>
+      <div class="indice" id="indice"></div>
+      <button class="flecha" id="next" aria-label="Siguiente">▶</button>
+    </div>
+  </main>
+
+<!-- ====== LÓGICA (puedes mover esto a recomendaciones-libros.js) ====== -->
+<script>
+const secciones = [
+  { portada:true, tab:'Portada' },
+  {
+    num:'LIBRO I', tab:'Bonnett', titulo:'Lo que no tiene nombre', meta:'Piedad Bonnett · 🇨🇴 Colombia',
+    parrafos:[
+      'De la literatura colombiana recomendaría <em>Lo que no tiene nombre</em>, de Piedad Bonnett. Es una obra profundamente personal en la que la autora reflexiona sobre la vida y la muerte de su hijo Daniel. A través de una escritura honesta y conmovedora, Bonnett aborda temas como la salud mental, el duelo, la memoria y el amor familiar.',
+      'Aunque se trata de una experiencia íntima, el libro logra conectar con preguntas universales sobre la pérdida y la manera en que las personas intentan reconstruir su vida después de una tragedia. Es una lectura difícil por momentos, pero también profundamente humana y necesaria.'
+    ]
+  },
+  {
+    num:'LIBRO II', tab:'Asimov', titulo:'Fundación', meta:'Isaac Asimov · 🌎 Internacional',
+    parrafos:[
+      'Del ámbito internacional recomendaría <em>Fundación</em>, de Isaac Asimov. Considerada una de las obras más importantes de la ciencia ficción, la novela presenta una sociedad galáctica en decadencia y el esfuerzo de un grupo de científicos por preservar el conocimiento humano para reducir siglos de oscuridad.',
+      'Más que una historia sobre tecnología, es una reflexión sobre la historia, la política, el poder y la capacidad del conocimiento para transformar el futuro. A través de la psicohistoria y de los acontecimientos que enfrentan los personajes, Asimov plantea preguntas sobre el destino de las civilizaciones y el papel que juegan las ideas en el desarrollo de la humanidad.',
+      'Su influencia puede verse todavía hoy en innumerables obras de ciencia ficción y continúa siendo una lectura fundamental para quienes disfrutan de imaginar el futuro sin dejar de reflexionar sobre el presente.'
+    ]
+  }
+];
+
+const hoja=document.getElementById('hoja'), flip=document.getElementById('flip'),
+      caraFrente=document.getElementById('caraFrente'), caraDorso=document.getElementById('caraDorso'),
+      indiceEl=document.getElementById('indice'), btnPrev=document.getElementById('prev'), btnNext=document.getElementById('next');
+
+let actual=0, animando=false; const total=secciones.length;
+
+function htmlDe(i){
+  const s=secciones[i];
+  if(s.portada){
+    return `<div class="portada">
+      <div class="sello">◈ EL COCODRILO RECOMIENDA ◈</div>
+      <h1>Recomendaciones<br>literarias</h1>
+      <div class="sub">Dos lecturas para llevar</div>
+      <div class="orn">∿ ◆ ∿</div>
+      <div class="hint">▶ pasa la página</div>
+    </div>`;
+  }
+  return `<div class="num-cap">${s.num}</div>
+    <h2 class="titulo-cap">${s.titulo}</h2>
+    <div class="meta-cap">${s.meta}</div>
+    <div class="regla"></div>
+    <div class="cuerpo">${s.parrafos.map((p,idx)=>`<p${idx===0?' class="dropcap"':''}>${p}</p>`).join('')}</div>
+    <div class="folio">— ${i} —</div>`;
+}
+
+secciones.forEach((s,i)=>{ if(s.portada) return;
+  const b=document.createElement('button'); b.className='tab'; b.textContent=s.tab; b.dataset.i=i;
+  b.addEventListener('click', ()=> irA(i)); indiceEl.appendChild(b);
+});
+
+function actualizarUI(){
+  document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('activa', Number(t.dataset.i)===actual));
+  btnPrev.disabled=actual===0; btnNext.disabled=actual===total-1;
+}
+function render(i){ hoja.innerHTML=htmlDe(i); actual=i; actualizarUI(); }
+function irA(i){ if(animando||i===actual||i<0||i>=total) return; voltear(i, i>actual?'next':'prev'); }
+
+function voltear(i, dir){
+  animando=true;
+  const saliente=htmlDe(actual), entrante=htmlDe(i);
+  hoja.innerHTML=entrante;
+  if(dir==='next'){ caraFrente.innerHTML=saliente; caraDorso.innerHTML=entrante; flip.style.transition='none'; flip.style.transform='rotateY(0deg)'; }
+  else { caraDorso.innerHTML=saliente; caraFrente.innerHTML=entrante; flip.style.transition='none'; flip.style.transform='rotateY(-180deg)'; }
+  flip.classList.add('activa'); void flip.offsetWidth;
+  flip.style.transition='transform .8s cubic-bezier(.42,.04,.22,1)';
+  flip.style.transform = dir==='next' ? 'rotateY(-180deg)' : 'rotateY(0deg)';
+  setTimeout(()=>{ flip.classList.remove('activa'); flip.style.transition='none'; flip.style.transform='rotateY(0deg)';
+    caraFrente.innerHTML=''; caraDorso.innerHTML=''; actual=i; actualizarUI(); animando=false; }, 820);
+}
+
+btnNext.addEventListener('click', ()=> irA(actual+1));
+btnPrev.addEventListener('click', ()=> irA(actual-1));
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') irA(actual+1); if(e.key==='ArrowLeft') irA(actual-1); });
+
+render(0);
+</script>
+</body>
+</html>
