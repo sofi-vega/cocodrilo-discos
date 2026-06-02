@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Conversar con Miranda | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a conversar.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root{
+  --oro:#e0b43c;
+  --oro-bright:#f5ca4e;
+  --verde:#123d20;
+  --verde-claro:#1e6b3a;
+  --verde-oscuro:#0a2412;
+  --crema:#fff4c4;
+  --crema-dim:#f8e9b0;
+  --fondo:#090909;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:var(--fondo);
+  height:100vh; overflow:hidden;
+  font-family:'VT323','Courier New',monospace; color:var(--crema);
+}
+body::before{ content:''; position:fixed; inset:0; z-index:60; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px); }
+
+/* barra + volver */
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px;
+  z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== ESCENA ====== */
+.escena{ position:relative; width:100vw; height:100vh; }
+.fallback{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at center, #2a8c8c 0%, #0a2412 75%);
+  font-family:'Press Start 2P',monospace; font-size:30px; color:var(--crema); letter-spacing:3px;
+}
+.fondo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:1; }
+
+/* velo inferior para legibilidad */
+.velo{ position:absolute; left:0; right:0; bottom:0; height:46%; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg, transparent, rgba(5,12,8,.92)); }
+
+/* ====== CAJA DE DIÁLOGO ====== */
+.caja{
+  position:absolute; left:50%; bottom:28px; transform:translateX(-50%);
+  width:90%; max-width:840px; z-index:10;
+  background:rgba(7,26,14,.94); border:3px solid var(--oro);
+  box-shadow:5px 5px 0 rgba(0,0,0,.8), 0 0 18px rgba(224,180,60,.25);
+  padding:16px 22px 18px;
+}
+.caja::before{ /* puntita hacia arriba (hacia Miranda) */
+  content:''; position:absolute; top:-15px; left:60px;
+  border-left:12px solid transparent; border-right:12px solid transparent;
+  border-bottom:15px solid var(--oro);
+}
+.nombre{ font-family:'Press Start 2P',monospace; font-size:11px; color:var(--oro);
+  letter-spacing:1px; margin-bottom:10px; text-shadow:1px 1px 0 rgba(0,0,0,.5); }
+
+/* fichas de datos (cuando aplica) */
+.datos{ display:none; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.datos.activo{ display:flex; }
+.chip{ background:rgba(224,180,60,.1); border:2px solid var(--oro); padding:5px 9px; min-width:96px; }
+.chip b{ display:block; font-family:'Press Start 2P',monospace; font-size:11px; color:var(--oro-bright); }
+.chip span{ font-size:15px; color:var(--crema-dim); }
+
+/* texto que se escribe */
+.texto{ font-size:24px; line-height:1.4; color:var(--crema); min-height:96px; }
+.cursor-d{ color:var(--oro); }
+.parpadea{ animation:parp .5s step-end infinite; }
+@keyframes parp{ 0%,100%{opacity:1} 50%{opacity:0} }
+.avanzar{ text-align:right; font-family:'Press Start 2P',monospace; font-size:10px; color:var(--oro);
+  margin-top:6px; opacity:0; transition:opacity .2s; }
+
+/* opciones de pregunta */
+.opciones{ display:none; grid-template-columns:1fr 1fr; gap:9px; margin-top:4px; }
+.opciones.activo{ display:grid; }
+.opcion{
+  background:rgba(18,61,32,.7); border:2px solid #2f6b42; color:var(--crema-dim);
+  font-family:'VT323',monospace; font-size:20px; text-align:left; padding:9px 13px; cursor:pointer;
+  transition:all .13s; display:flex; gap:8px; align-items:center;
+}
+.opcion::before{ content:'▶'; color:var(--oro); font-size:13px; }
+.opcion:hover{ border-color:var(--oro); color:var(--crema); background:rgba(30,107,58,.7); transform:translateX(3px); }
+
+.pista{ position:absolute; bottom:6px; left:50%; transform:translateX(-50%); z-index:10;
+  font-family:'Press Start 2P',monospace; font-size:6px; color:rgba(248,233,176,.5); letter-spacing:1px; }
+
+@media(max-width:720px){
+  .texto{ font-size:20px; }
+  .opciones{ grid-template-columns:1fr; }
+  .caja{ bottom:20px; }
+}
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  CONVERSAR CON MIRANDA</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <main class="escena">
+    <div class="fallback">MIRANDA</div>
+    <img class="fondo" id="miranda" src="img/miranda-escucha.png" alt="Miranda" onerror="this.style.display='none'">
+    <div class="velo"></div>
+
+    <div class="caja" id="caja">
+      <div class="nombre">MIRANDA</div>
+      <div class="datos" id="datos"></div>
+      <div class="texto" id="texto"></div>
+      <div class="avanzar" id="avanzar">▶ continuar</div>
+      <div class="opciones" id="opciones"></div>
+    </div>
+
+    <div class="pista">clic para avanzar · ←/→ no aplican</div>
+  </main>
+
+<!-- ====== LÓGICA (puedes mover esto a conversar.js) ====== -->
+<script>
+const ESCUCHA  = 'img/miranda-escucha.png';
+const CONVERSA = 'img/miranda-conversa.png';
+
+const intro = [
+  '¿Que el rock, la literatura y los libros son cosa del pasado y que a los jóvenes ya no les interesan? Es lo que mucha gente cree...',
+  'Pero déjame mostrarte por qué no estoy nada de acuerdo. Pregúntame lo que quieras.'
+];
+
+const temas = [
+  {
+    q:'¿Eso es cosa del pasado?',
+    lineas:[
+      'Para nada. La idea de que el rock, la literatura y los libros físicos son reliquias que ya no le interesan a nadie joven es, sencillamente, falsa.',
+      'Lo que ocurre no es una extinción, sino una metamorfosis. Estas prácticas se transforman: por un lado se revaloriza lo material, y por otro aparecen nuevos espacios virtuales donde la gente se reúne alrededor de ellas.'
+    ]
+  },
+  {
+    q:'¿Qué dicen las cifras en Colombia?',
+    datos:[
+      { n:'2,7 → 3,75', l:'libros/año (general)' },
+      { n:'5,45 → 6,91', l:'libros/año (lectores)' },
+      { n:'72%', l:'se declara lector' },
+      { n:'55%', l:'prefiere el papel' }
+    ],
+    lineas:[
+      'En Colombia los números van para arriba, no para abajo. Según el DANE y la Cámara Colombiana del Libro, el hábito lector se fortaleció en los mayores de 18 años.',
+      'Mira: el promedio anual de libros leídos pasó de 2,7 en 2017 a 3,75 en 2023. Y entre quienes ya leen, subió de 5,45 a 6,91. Hoy el 72% de la población se declara lectora.',
+      'Lo más diciente: más de la mitad, un 55% de los lectores habituales, todavía prefiere el papel sobre lo digital. El soporte físico resiste y se revaloriza.'
+    ]
+  },
+  {
+    q:'¿Los jóvenes sí leen?',
+    lineas:[
+      'Sí. En el grupo de 10 a 22 años, el 58% se reconoce como lector habitual.',
+      'No es que no lean: tienen barreras nuevas. Un 43,5% dice que le falta tiempo, y un 29,4% reconoce dificultades de concentración por la fragmentación de la atención digital.',
+      'Pero el consumo no desapareció: se mudó. Plataformas como Wattpad y comunidades como BookTok, en TikTok, convirtieron la lectura en algo colectivo y social, y ya no solo en un acto íntimo y solitario.'
+    ]
+  },
+  {
+    q:'¿Cómo leen hoy los jóvenes?',
+    lineas:[
+      'Desde el celular, sobre todo. Consumen poesía breve, fanfiction y narrativa contemporánea de forma masiva, y entre ellos mismos vuelven famosas obras que ni siquiera pasaron por las grandes editoriales.',
+      'Hay críticas válidas, eso sí: a veces priorizan la cantidad y la inmediatez por encima de una lectura crítica y profunda.',
+      'Pero, curiosamente, el libro físico sigue siendo un objeto de deseo, casi un fetiche cultural, una forma de pertenencia e identidad para ellos.'
+    ]
+  },
+  {
+    q:'¿Y el vinilo y el rock?',
+    lineas:[
+      'Igualito. El vinilo y el rock están resurgiendo por el mismo principio: la resistencia de lo material frente a un mundo digital que lo desmaterializa todo.',
+      'Vuelven los tornamesas y las ventas de vinilos suben año tras año. Las nuevas generaciones valoran el ritual de la escucha concentrada que el formato exige.',
+      'El rock dejó de ser el rey absoluto de la radio masiva para volverse un género de culto, de alta fidelidad, con una mística que apela al valor del soporte físico... la misma mística analógica que vive en las páginas de Juan Carlos Garay.'
+    ]
+  },
+  {
+    q:'¿Cuál es tu conclusión?',
+    lineas:[
+      'Que no es el pasado: es otra forma de presente. El papel y el vinilo no se están extinguiendo, se están reinventando.',
+      'Y a las nuevas generaciones sí les interesan... solo que los viven a su manera.'
+    ]
+  }
+];
+
+const miranda  = document.getElementById('miranda');
+const fallback = document.querySelector('.fallback');
+const textoEl  = document.getElementById('texto');
+const avanzarEl= document.getElementById('avanzar');
+const opcionesEl=document.getElementById('opciones');
+const datosEl  = document.getElementById('datos');
+const caja     = document.getElementById('caja');
+
+let lineas = [], li = 0, alFinal = null;
+let typing = false, typer = null, flap = null, lineaActual = '';
+let abierto = false;
+
+function setImg(src){ miranda.style.display='block'; miranda.src = src; }
+
+/* construir opciones */
+temas.forEach((t,i)=>{
+  const b = document.createElement('button');
+  b.className='opcion'; b.textContent = t.q;
+  b.addEventListener('click', (e)=>{ e.stopPropagation(); responder(i); });
+  opcionesEl.appendChild(b);
+});
+
+function responder(i){
+  const t = temas[i];
+  // datos
+  if(t.datos){
+    datosEl.innerHTML = t.datos.map(d=>`<div class="chip"><b>${d.n}</b><span>${d.l}</span></div>`).join('');
+    datosEl.classList.add('activo');
+  } else {
+    datosEl.classList.remove('activo'); datosEl.innerHTML='';
+  }
+  hablar(t.lineas, mostrarOpciones);
+}
+
+function hablar(arr, cb){
+  lineas = arr; li = 0; alFinal = cb;
+  opcionesEl.classList.remove('activo');
+  mostrarLinea();
+}
+
+function mostrarLinea(){
+  lineaActual = lineas[li];
+  textoEl.innerHTML = '<span id="tt"></span><span class="cursor-d parpadea">▌</span>';
+  const tt = document.getElementById('tt');
+  avanzarEl.style.opacity = 0;
+  blip();
+
+  // boca en movimiento mientras escribe
+  let abierta = false;
+  clearInterval(flap);
+  flap = setInterval(()=>{ abierta = !abierta; setImg(abierta ? CONVERSA : ESCUCHA); }, 140);
+
+  let i = 0;
+  const vel = Math.max(11, Math.min(28, Math.floor(5200 / lineaActual.length)));
+  typing = true;
+  clearInterval(typer);
+  typer = setInterval(()=>{
+    tt.textContent = lineaActual.slice(0, i);
+    if(i++ >= lineaActual.length){ terminarLinea(); }
+  }, vel);
+}
+
+function terminarLinea(){
+  clearInterval(typer); typer = null;
+  clearInterval(flap); flap = null;
+  typing = false;
+  setImg(ESCUCHA);                 // boca cerrada al terminar
+  textoEl.innerHTML = lineaActual + ' <span class="cursor-d parpadea">▌</span>';
+  avanzarEl.textContent = (li >= lineas.length-1) ? '▶ preguntar otra cosa' : '▶ continuar';
+  avanzarEl.style.opacity = 1;
+}
+
+function avanzar(){
+  if(typing){ terminarLinea(); return; }   // primer clic: completa
+  li++;
+  if(li < lineas.length){ mostrarLinea(); }
+  else { alFinal && alFinal(); }
+}
+
+function mostrarOpciones(){
+  setImg(ESCUCHA);
+  datosEl.classList.remove('activo');
+  textoEl.textContent = '¿Qué más quieres preguntarme?';
+  avanzarEl.style.opacity = 0;
+  opcionesEl.classList.add('activo');
+}
+
+/* avanzar al hacer clic (menos sobre los botones) */
+caja.addEventListener('click', (e)=>{
+  if(e.target.closest('.opcion')) return;
+  if(opcionesEl.classList.contains('activo')) return;
+  avanzar();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key===' ' || e.key==='Enter'){
+    if(!opcionesEl.classList.contains('activo')) avanzar();
+  }
+});
+
+/* ── blip suave ── */
+let audioCtx=null;
+function getCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function blip(){
+  try{
+    const ctx=getCtx();
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type='square'; o.frequency.setValueAtTime(420, ctx.currentTime);
+    g.gain.setValueAtTime(.04, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+.07);
+    o.start(); o.stop(ctx.currentTime+.07);
+  }catch(_){}
+}
+
+/* arranca con la intro y luego muestra opciones */
+hablar(intro, mostrarOpciones);
+</script>
+</body>
+</html>
