@@ -7,25 +7,25 @@
 
 <!-- ====== ESTILOS (puedes mover esto a historia.css) ====== -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
 :root{
   --oro:#e0b43c; --oro-bright:#f5ca4e;
   --verde:#123d20; --verde-claro:#1e6b3a; --verde-oscuro:#0a2412;
-  --crema:#fff4c4;
-  /* tapa oscura */
-  --cover-1:#15201a; --cover-2:#0a0f0b;
-  --texto:#ece7d6; --texto-soft:#a9a692;
+  --crema:#fff4c4; --crema-dim:#f8e9b0; --fondo:#090909; --rojo:#e0735c;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  background:#0a0a07;
+  background:radial-gradient(ellipse at 50% 26%, #1c2618 0%, var(--fondo) 72%);
   min-height:100vh; overflow-y:auto;
-  font-family:'EB Garamond', Georgia, serif; color:var(--texto);
-  padding:54px 16px 60px;
-  display:flex; justify-content:center; align-items:flex-start;
+  font-family:'VT323','Courier New',monospace; color:var(--crema);
+  display:flex; align-items:center; justify-content:center; padding:54px 16px 46px;
 }
+body::before{ content:''; position:fixed; inset:0; z-index:90; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.13) 2px, rgba(0,0,0,.13) 4px); }
+body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,.5) 100%); }
 
 .barra-titulo{
   position:fixed; top:0; left:0; right:0; height:26px;
@@ -43,72 +43,71 @@ body{
 }
 .volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
 
-/* ====== CONTRAPORTADA (oscura) ====== */
-.contraportada{
-  position:relative; width:580px; max-width:96vw; margin-top:16px;
-  background:
-    radial-gradient(circle at 82% 10%, rgba(224,180,60,.06), transparent 42%),
-    linear-gradient(180deg, var(--cover-1), var(--cover-2));
-  border:1px solid #2b352b;
-  box-shadow:0 26px 55px rgba(0,0,0,.7), inset 0 0 60px rgba(0,0,0,.45);
-  padding:30px 38px 34px; color:var(--texto);
-}
-/* sombra del lomo (lado derecho) */
-.contraportada::before{
-  content:''; position:absolute; top:0; right:0; bottom:0; width:38px;
-  background:linear-gradient(270deg, rgba(0,0,0,.45), transparent); pointer-events:none;
-}
+/* ====== ESCENA ====== */
+.escena{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+.titulo{ font-family:'Press Start 2P',monospace; font-size:13px; color:var(--oro); letter-spacing:2px; text-shadow:2px 2px 0 var(--verde-oscuro); text-align:center; }
+.sub-libro{ font-size:20px; color:var(--crema-dim); text-align:center; line-height:1.15; }
+.sub-libro em{ color:var(--oro); font-style:italic; }
 
-.genero{ font-family:'Press Start 2P',monospace; font-size:7px; letter-spacing:2px; color:var(--oro); text-transform:uppercase; }
-.resena{
-  font-family:'Playfair Display',serif; font-style:italic; font-weight:400;
-  font-size:21px; line-height:1.4; color:#fbf7ea; margin:14px 0 6px;
-  border-left:3px solid var(--oro); padding-left:14px;
+.player{ display:flex; gap:30px; align-items:stretch; }
+
+/* ── TOCADISCOS ── */
+.tocadiscos{ position:relative; width:340px; height:340px; flex-shrink:0;
+  background:linear-gradient(160deg, #1c1c1c, #0c0c0c); border:3px solid #2a2a2a;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.8), 6px 6px 0 rgba(0,0,0,.6); }
+.plato{ position:absolute; top:50%; left:46%; transform:translate(-50%,-50%);
+  width:300px; height:300px; border-radius:50%;
+  background:repeating-radial-gradient(circle at center, #2a2a2a 0 1px, #222 1px 3px);
+  box-shadow:0 0 0 6px #181818, inset 0 0 30px rgba(0,0,0,.7); }
+.disco{ position:absolute; top:50%; left:50%; width:286px; height:286px; border-radius:50%; transform:translate(-50%,-50%);
+  background:repeating-radial-gradient(circle at center, #0c0c0c 0 2px, #1a1a1a 2px 4px),
+            radial-gradient(circle at 38% 32%, rgba(255,255,255,.06), transparent 45%);
+  box-shadow:inset 0 0 26px rgba(0,0,0,.9); }
+.disco.girando{ animation:girar 2.1s linear infinite; }
+@keyframes girar{ to{ transform:translate(-50%,-50%) rotate(360deg);} }
+.etiqueta{ position:absolute; top:50%; left:50%; width:120px; height:120px; border-radius:50%; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--crema);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.45); transition:background .4s; }
+.etiqueta .cara{ font-family:'Press Start 2P',monospace; font-size:16px; }
+.etiqueta .tit{ font-size:14px; line-height:1; margin-top:8px; opacity:.92; padding:0 8px; }
+.hueco{ position:absolute; top:50%; left:50%; width:9px; height:9px; border-radius:50%; transform:translate(-50%,-50%); background:#000; box-shadow:0 0 0 2px rgba(255,255,255,.15); }
+.brazo{ position:absolute; top:24px; right:26px; width:8px; height:200px;
+  background:linear-gradient(180deg,#eee,#888); border:1px solid #555;
+  transform-origin:top center; transform:rotate(8deg); transition:transform .55s cubic-bezier(.4,.1,.2,1); z-index:6; }
+.brazo.levantado{ transform:rotate(28deg); }
+.brazo::before{ content:''; position:absolute; top:-15px; left:-10px; width:28px; height:28px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #f0d27a, #9a7820); border:2px solid #6a5215; }
+.brazo::after{ content:''; position:absolute; bottom:-7px; left:-7px; width:22px; height:15px; background:#222; border:1px solid #000; transform:rotate(-8deg); }
+.rpm{ position:absolute; bottom:14px; right:16px; font-family:'Press Start 2P',monospace; font-size:7px; color:var(--oro); letter-spacing:1px; }
+
+/* ── PANEL (notas del disco) ── */
+.panel{ width:430px; display:flex; flex-direction:column;
+  background:rgba(9,36,18,.92); border:2px solid var(--oro);
+  box-shadow:6px 6px 0 rgba(0,0,0,.6), inset 0 0 30px rgba(0,0,0,.4); padding:18px 22px 20px; }
+.panel.spoiler{ border-color:var(--rojo); box-shadow:6px 6px 0 rgba(0,0,0,.6), inset 0 0 30px rgba(0,0,0,.4), 0 0 18px rgba(224,115,92,.3); }
+.cabecera{ border-bottom:1px solid rgba(224,180,60,.3); padding-bottom:10px; margin-bottom:12px; }
+.cabecera .lib{ font-family:'Press Start 2P',monospace; font-size:9px; color:var(--crema); letter-spacing:1px; line-height:1.5; }
+.cabecera .aut{ font-size:18px; color:var(--oro); font-style:italic; margin-top:4px; }
+.lado{ font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px; color:var(--oro); margin-bottom:10px; }
+.panel.spoiler .lado{ color:var(--rojo); }
+.cuerpo{ overflow-y:auto; max-height:300px; padding-right:8px; }
+.cuerpo p{ font-size:19px; line-height:1.5; color:var(--crema-dim); margin-bottom:12px; }
+.cuerpo em{ font-style:italic; color:var(--crema); }
+.cuerpo::-webkit-scrollbar{ width:7px; } .cuerpo::-webkit-scrollbar-thumb{ background:rgba(224,180,60,.4); } .cuerpo::-webkit-scrollbar-track{ background:rgba(0,0,0,.3); }
+
+/* ── selector de cara ── */
+.caras{ display:flex; gap:12px; }
+.cara-btn{ background:rgba(255,255,255,.04); border:2px solid #444; color:var(--crema-dim);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px; padding:11px 16px; cursor:pointer; transition:all .14s; }
+.cara-btn:hover{ border-color:var(--oro); color:var(--crema); }
+.cara-btn.activa{ background:var(--oro); color:var(--verde-oscuro); border-color:var(--oro-bright); box-shadow:0 0 12px rgba(224,180,60,.5); }
+.cara-btn.b.activa{ background:var(--rojo); border-color:#f0a08e; box-shadow:0 0 12px rgba(224,115,92,.5); color:#2a1109; }
+
+@media(max-width:820px){
+  .player{ flex-direction:column; align-items:center; }
+  .panel{ width:360px; }
+  .cuerpo{ max-height:220px; }
 }
-.titulo-libro{ font-family:'Playfair Display',serif; font-weight:900; font-size:30px; line-height:1.05; color:#ffffff; margin-top:18px; }
-.autor-libro{ font-family:'Playfair Display',serif; font-style:italic; font-size:17px; color:var(--oro); margin-top:4px; }
-.regla{ height:0; border-top:1px solid rgba(224,180,60,.45); margin:16px 0; }
-
-.sinopsis p{ font-size:17.5px; line-height:1.62; text-align:justify; margin-bottom:12px; color:var(--texto); }
-.sinopsis p:first-child::first-letter{
-  float:left; font-family:'Playfair Display',serif; font-weight:900; font-size:50px; line-height:.8; padding:5px 8px 0 0; color:var(--oro);
-}
-.sinopsis em{ font-style:italic; color:#fbf7ea; }
-
-/* ====== SPOILERS ====== */
-.spoiler-zona{ margin-top:24px; }
-.cinta{
-  width:100%; cursor:pointer; border:none;
-  font-family:'Press Start 2P',monospace; font-size:9px; letter-spacing:1px;
-  padding:13px 12px; text-align:center;
-  background:repeating-linear-gradient(45deg, var(--oro) 0 14px, #0a0f0b 14px 28px);
-  box-shadow:3px 3px 0 rgba(0,0,0,.6);
-}
-.cinta span{ background:#0a0f0b; color:var(--oro); padding:7px 12px; display:inline-block; border:2px solid var(--oro); }
-.cinta:hover span{ background:var(--oro); color:#0a0f0b; }
-
-.spoiler-texto{
-  max-height:0; overflow:hidden; opacity:0;
-  transition:max-height .7s ease, opacity .6s ease, margin .4s;
-  background:rgba(255,255,255,.04); border:1px solid rgba(224,180,60,.25); border-top:none;
-}
-.spoiler-zona.abierto .spoiler-texto{ max-height:1500px; opacity:1; margin-top:-3px; padding:20px 22px 22px; }
-.spoiler-texto h3{ font-family:'Press Start 2P',monospace; font-size:8px; color:#e0735c; letter-spacing:1px; margin-bottom:14px; text-transform:uppercase; }
-.spoiler-texto p{ font-size:17px; line-height:1.62; text-align:justify; color:var(--texto); }
-.spoiler-texto em{ font-style:italic; color:#fbf7ea; }
-
-/* ====== PIE ====== */
-.pie{ display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px; padding-top:16px; border-top:1px solid rgba(224,180,60,.4); }
-.editorial{ font-family:'Playfair Display',serif; font-weight:700; font-size:18px; letter-spacing:3px; color:#ffffff; text-transform:uppercase; }
-.editorial small{ display:block; font-family:'EB Garamond',serif; font-weight:400; font-size:13px; letter-spacing:1px; color:var(--texto-soft); text-transform:none; margin-top:2px; }
-/* parche claro del código de barras, como en los libros reales */
-.barras{ background:#f4ecd6; padding:6px 8px 4px; border-radius:2px; width:140px; }
-.barras .codigo{ height:42px; background:repeating-linear-gradient(90deg,
-  #111 0 2px, transparent 2px 4px, #111 4px 7px, transparent 7px 8px,
-  #111 8px 9px, transparent 9px 12px, #111 12px 15px, transparent 15px 16px); }
-.barras .num{ font-family:'EB Garamond',serif; font-size:12px; letter-spacing:2px; text-align:center; color:#111; margin-top:3px; }
-
-@media(max-width:560px){ .contraportada{ padding:24px 22px 28px; } .titulo-libro{ font-size:24px; } }
 </style>
 </head>
 
@@ -116,67 +115,116 @@ body{
   <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  HISTORIA DEL LIBRO</div>
   <a href="index.html?dentro=1" class="volver">← Volver</a>
 
-  <div class="contraportada">
-    <div class="genero">Novela · Ficción</div>
+  <main class="escena">
+    <div class="titulo">💿 EL DISCO DE LA HISTORIA</div>
+    <div class="sub-libro">La historia de <em>La nostalgia del melómano</em> · pon la Cara A o voltéalo a la Cara B</div>
 
-    <p class="resena">«Una celebración de la música como refugio y una reflexión sobre la memoria y el paso del tiempo.»</p>
+    <div class="player">
+      <!-- TOCADISCOS -->
+      <div class="tocadiscos">
+        <div class="plato">
+          <div class="disco girando" id="disco">
+            <div class="etiqueta" id="etiqueta">
+              <span class="cara" id="etCara">CARA A</span>
+              <span class="tit">La nostalgia del melómano</span>
+            </div>
+            <div class="hueco"></div>
+          </div>
+        </div>
+        <div class="brazo" id="brazo"></div>
+        <div class="rpm">▸ 33⅓ RPM</div>
+      </div>
 
-    <h1 class="titulo-libro">La nostalgia del melómano</h1>
-    <div class="autor-libro">Juan Carlos Garay</div>
-
-    <div class="regla"></div>
-
-    <div class="sinopsis">
-      <p>Francisco Talavera es el dueño de El Cocodrilo Discos, una pequeña tienda de vinilos que sobrevive en una época donde la música digital comienza a desplazar a los formatos tradicionales. Melómano apasionado y coleccionista incansable, Francisco ha construido su vida alrededor de los discos, las historias que esconden y las personas que los buscan.</p>
-      <p>La aparente tranquilidad de su rutina cambia cuando surge la posibilidad de encontrar una grabación extraordinaria, un disco raro rodeado de rumores, recuerdos y versiones contradictorias. Lo que comienza como una simple búsqueda musical termina convirtiéndose en un recorrido por librerías, tiendas de discos, archivos, conversaciones entre coleccionistas y rincones olvidados de la memoria cultural.</p>
-      <p>A través de esta investigación, la novela presenta un universo poblado por melómanos obsesivos, personajes excéntricos y amantes de la música que encuentran en los discos mucho más que objetos de colección. Cada encuentro revela nuevas historias, recuerdos y reflexiones sobre el paso del tiempo, la nostalgia y el valor de conservar aquello que parece destinado a desaparecer.</p>
-      <p>Más que una novela sobre vinilos, <em>La nostalgia del melómano</em> es una celebración de la música como refugio, una reflexión sobre la memoria y una exploración de cómo las canciones, los libros y los objetos culturales pueden convertirse en parte fundamental de nuestra identidad. En un mundo que avanza rápidamente hacia lo digital, Juan Carlos Garay construye una historia que invita a detenerse, escuchar con atención y recordar por qué ciertas pasiones nunca desaparecen.</p>
-    </div>
-
-    <!-- SPOILERS -->
-    <div class="spoiler-zona" id="spZona">
-      <button class="cinta" id="spToggle"><span>⚠ VER SPOILERS · EL FINAL DEL LIBRO</span></button>
-      <div class="spoiler-texto" id="spTexto">
-        <h3>⚠ Lo que la contraportada no te cuenta</h3>
-        <p>En la novela, Francisco Talavera, "Efe", vive su vida a través de los discos. La música de Eric Clapton lo acompaña en diferentes momentos: primero con el álbum de Blind Faith que escuchaba su hermano, luego con el blues que le recuerda a Sandra, y finalmente con el misterioso disco <em>461 Ocean Boulevard</em>, relacionado con la posible grabación de <em>El ratón</em> junto a Cheo Feliciano. Esa obsesión lo lleva a pedir distintas ediciones de la canción, escuchar los discos con los ojos cerrados y buscar pruebas sobre una supuesta sesión en Miami en agosto de 1974. Aunque Lino le ofrece el disco y le hace un descuento, Efe decide no comprarlo porque no está seguro de que sea auténtico. Incluso llega a consultar a un espiritista, y más adelante encuentra una pista que confirma que Feliciano sí estuvo en Miami en esa fecha; sin embargo, cuando intenta comprar el disco, Lino ya se ha ido a Lima. Al mismo tiempo, Efe se enamora de Miranda, su joven asistente, pero nunca se atreve a confesárselo. Ella lo besa antes de irse a estudiar a Nueva York, y él se queda lamentando no haberle dicho lo que sentía. Al final, Efe no consigue ni el disco ni a Miranda: permanece en El Cocodrilo Discos, triste y nostálgico, acompañado por David, el nuevo asistente que ella le recomendó.</p>
+      <!-- PANEL -->
+      <div class="panel" id="panel">
+        <div class="cabecera">
+          <div class="lib">LA NOSTALGIA DEL MELÓMANO</div>
+          <div class="aut">Juan Carlos Garay</div>
+        </div>
+        <div class="lado" id="lado">► CARA A · EL RESUMEN</div>
+        <div class="cuerpo" id="cuerpo"></div>
       </div>
     </div>
 
-    <!-- PIE -->
-    <div class="pie">
-      <div class="editorial">Alfaguara<small>El Cocodrilo Discos · 2005</small></div>
-      <div class="barras">
-        <div class="codigo"></div>
-        <div class="num">9 789580 000000</div>
-      </div>
+    <!-- SELECTOR DE CARA -->
+    <div class="caras">
+      <button class="cara-btn a activa" id="btnA">CARA A · RESUMEN</button>
+      <button class="cara-btn b" id="btnB">CARA B · ⚠ SPOILERS</button>
     </div>
-  </div>
+  </main>
 
 <!-- ====== LÓGICA (puedes mover esto a historia.js) ====== -->
 <script>
-const spZona   = document.getElementById('spZona');
-const spToggle = document.getElementById('spToggle');
-const spSpan   = spToggle.querySelector('span');
+const caraA = {
+  cara:'CARA A', color:'radial-gradient(circle at 35% 35%, #e0b43c, #8a6614)',
+  lado:'► CARA A · EL RESUMEN',
+  parrafos:[
+    'Francisco Talavera es el dueño de El Cocodrilo Discos, una pequeña tienda de vinilos que sobrevive en una época donde la música digital comienza a desplazar a los formatos tradicionales. Melómano apasionado y coleccionista incansable, Francisco ha construido su vida alrededor de los discos, las historias que esconden y las personas que los buscan.',
+    'La aparente tranquilidad de su rutina cambia cuando surge la posibilidad de encontrar una grabación extraordinaria, un disco raro rodeado de rumores, recuerdos y versiones contradictorias. Lo que comienza como una simple búsqueda musical termina convirtiéndose en un recorrido por librerías, tiendas de discos, archivos, conversaciones entre coleccionistas y rincones olvidados de la memoria cultural.',
+    'A través de esta investigación, la novela presenta un universo poblado por melómanos obsesivos, personajes excéntricos y amantes de la música que encuentran en los discos mucho más que objetos de colección. Cada encuentro revela nuevas historias, recuerdos y reflexiones sobre el paso del tiempo, la nostalgia y el valor de conservar aquello que parece destinado a desaparecer.',
+    'Más que una novela sobre vinilos, La nostalgia del melómano es una celebración de la música como refugio, una reflexión sobre la memoria y una exploración de cómo las canciones, los libros y los objetos culturales pueden convertirse en parte fundamental de nuestra identidad. En un mundo que avanza rápidamente hacia lo digital, Juan Carlos Garay construye una historia que invita a detenerse, escuchar con atención y recordar por qué ciertas pasiones nunca desaparecen.'
+  ]
+};
+const caraB = {
+  cara:'CARA B', color:'radial-gradient(circle at 35% 35%, #e0735c, #7a1f12)',
+  lado:'⚠ CARA B · EL FINAL (SPOILERS)',
+  parrafos:[
+    'En la novela, Francisco Talavera, "Efe", vive su vida a través de los discos. La música de Eric Clapton lo acompaña en diferentes momentos: primero con el álbum de Blind Faith que escuchaba su hermano, luego con el blues que le recuerda a Sandra, y finalmente con el misterioso disco 461 Ocean Boulevard, relacionado con la posible grabación de El ratón junto a Cheo Feliciano.',
+    'Esa obsesión lo lleva a pedir distintas ediciones de la canción, escuchar los discos con los ojos cerrados y buscar pruebas sobre una supuesta sesión en Miami en agosto de 1974. Aunque Lino le ofrece el disco y le hace un descuento, Efe decide no comprarlo porque no está seguro de que sea auténtico. Incluso llega a consultar a un espiritista, y más adelante encuentra una pista que confirma que Feliciano sí estuvo en Miami en esa fecha; sin embargo, cuando intenta comprar el disco, Lino ya se ha ido a Lima.',
+    'Al mismo tiempo, Efe se enamora de Miranda, su joven asistente, pero nunca se atreve a confesárselo. Ella lo besa antes de irse a estudiar a Nueva York, y él se queda lamentando no haberle dicho lo que sentía.',
+    'Al final, Efe no consigue ni el disco ni a Miranda: permanece en El Cocodrilo Discos, triste y nostálgico, acompañado por David, el nuevo asistente que ella le recomendó.'
+  ]
+};
 
-spToggle.addEventListener('click', ()=>{
-  const abierto = spZona.classList.toggle('abierto');
-  spSpan.textContent = abierto ? '✕ OCULTAR SPOILERS' : '⚠ VER SPOILERS · EL FINAL DEL LIBRO';
-  blip();
-});
+const disco=document.getElementById('disco'), brazo=document.getElementById('brazo'),
+      etiqueta=document.getElementById('etiqueta'), etCara=document.getElementById('etCara'),
+      lado=document.getElementById('lado'), cuerpo=document.getElementById('cuerpo'),
+      panel=document.getElementById('panel'), btnA=document.getElementById('btnA'), btnB=document.getElementById('btnB');
 
-let audioCtx=null;
-function blip(){
-  try{
-    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-    o.connect(g); g.connect(audioCtx.destination);
-    o.type='square'; o.frequency.setValueAtTime(380, audioCtx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(560, audioCtx.currentTime+.06);
-    g.gain.setValueAtTime(.05, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime+.1);
-    o.start(); o.stop(audioCtx.currentTime+.1);
-  }catch(_){}
+let caraActual='';
+
+function poner(side){
+  if(side===caraActual) return;
+  caraActual=side;
+  const d = side==='A' ? caraA : caraB;
+
+  // levanta brazo y reinicia giro
+  brazo.classList.add('levantado');
+  disco.classList.remove('girando'); void disco.offsetWidth;
+
+  etiqueta.style.background = d.color;
+  etCara.textContent = d.cara;
+  lado.textContent = d.lado;
+  cuerpo.innerHTML = d.parrafos.map(p=>`<p>${p}</p>`).join('');
+  cuerpo.scrollTop = 0;
+
+  panel.classList.toggle('spoiler', side==='B');
+  btnA.classList.toggle('activa', side==='A');
+  btnB.classList.toggle('activa', side==='B');
+
+  flipSonido();
+  setTimeout(()=>{ disco.classList.add('girando'); brazo.classList.remove('levantado'); needle(); }, 420);
 }
+
+btnA.addEventListener('click', ()=> poner('A'));
+btnB.addEventListener('click', ()=> poner('B'));
+
+/* ── sonidos ── */
+let audioCtx=null;
+function getCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function flipSonido(){ try{ const ctx=getCtx(); const o=ctx.createOscillator(), g=ctx.createGain();
+  o.connect(g); g.connect(ctx.destination); o.type='triangle';
+  o.frequency.setValueAtTime(160,ctx.currentTime); o.frequency.exponentialRampToValueAtTime(70,ctx.currentTime+.1);
+  g.gain.setValueAtTime(.1,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.15);
+  o.start(); o.stop(ctx.currentTime+.15);}catch(_){} }
+function needle(){ try{ const ctx=getCtx(); const dur=.3;
+  const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate); const d=buf.getChannelData(0);
+  for(let k=0;k<d.length;k++){ d[k]=(Math.random()*2-1)*Math.pow(1-k/d.length,1.4)*.5; }
+  const src=ctx.createBufferSource(); src.buffer=buf; const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1900;
+  const g=ctx.createGain(); g.gain.value=.05; src.connect(hp); hp.connect(g); g.connect(ctx.destination); src.start();}catch(_){} }
+
+/* arranca en Cara A */
+poner('A');
 </script>
 </body>
 </html>
