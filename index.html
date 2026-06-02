@@ -14,74 +14,55 @@
       alt="El Cocodrilo Discos"
       class="imagen-fondo"
     />
-
     <div class="capa-oscura"></div>
-
     <section id="pantallaEntrada" class="pantalla-entrada">
       <button id="botonEntrar" class="boton-entrar">ENTRAR</button>
       <p class="texto-ayuda">Haz clic para entrar a la tienda</p>
     </section>
-
     <section id="pantallaInterior" class="pantalla-interior oculto">
-
       <!-- Diálogo de bienvenida de Miranda -->
       <div class="dialogo">
-          <span class="ph">M</span>
-          <img src="img/miranda.png" alt="Miranda" onerror="this.remove()">
-        </div>
         <div class="globo">
           <div class="quien">MIRANDA</div>
           <p class="charla"><span id="mirandaTexto"></span><span class="cursor-dlg">▌</span></p>
+        </div>
       </div>
-
       <a href="autor.html" class="hotspot" id="autor"
          data-label="📚 Autor y obra"
          style="left:3%; top:4%; width:20%; height:32%"></a>
-
       <a href="personajes.html" class="hotspot" id="personajes"
          data-label="🖼️ Personajes principales"
          style="left:23%; top:13%; width:13%; height:27%"></a>
-
       <a href="historia.html" class="hotspot" id="historia"
          data-label="💿 Historia del libro"
          style="left:2%; top:42%; width:23%; height:25%"></a>
-
       <a href="conversar.html" class="hotspot" id="miranda"
          data-label="💬 Conversar con Miranda"
          style="left:37%; top:24%; width:24%; height:35%"></a>
-
       <a href="contexto.html" class="hotspot" id="contexto"
          data-label="📰 Contexto político y social"
          style="left:58%; top:6%; width:15%; height:35%"></a>
-
       <a href="banda-sonora.html" class="hotspot" id="rockola"
          data-label="🎵 Banda sonora"
          style="left:72%; top:20%; width:13%; height:38%"></a>
-
       <a href="musica-literatura.html" class="hotspot" id="sofa"
          data-label="🎸 Música y literatura"
          style="left:82%; top:28%; width:16%; height:28%"></a>
-
       <a href="panorama-social.html" class="hotspot" id="gavetas"
          data-label="🇨🇴 Panorama social colombiano"
          style="left:0%; top:65%; width:19%; height:27%"></a>
-
       <a href="recomendaciones-musica.html" class="hotspot" id="vinilos"
          data-label="⭐ Recomendaciones musicales"
          style="left:25%; top:70%; width:24%; height:20%"></a>
-
       <a href="recomendaciones-libros.html" class="hotspot" id="libros"
          data-label="📚 Recomendaciones literarias"
          style="left:50%; top:70%; width:22%; height:20%"></a>
-
       <a href="bibliografia.html" class="hotspot" id="computador"
          data-label="💾 Bibliografía y fuentes"
          style="left:78%; top:63%; width:20%; height:30%"></a>
-
       <div class="tooltip" id="tooltip"></div>
     </section>
   </main>
-
   <audio id="sonidoCampana" src="audio/campana.mp3"></audio>
   <script src="script.js"></script>
 </body>
