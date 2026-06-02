@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panorama social | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a panorama-social.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root{
+  --oro:#e0b43c;
+  --oro-bright:#f5ca4e;
+  --verde:#123d20;
+  --verde-claro:#1e6b3a;
+  --verde-oscuro:#0a2412;
+  --crema:#fff4c4;
+  --crema-dim:#f8e9b0;
+  --fondo:#090909;
+  --rojo:#e0533c;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:radial-gradient(ellipse at 50% 26%, #1c2618 0%, var(--fondo) 72%);
+  min-height:100vh; overflow-y:auto;
+  font-family:'VT323','Courier New',monospace; color:var(--crema);
+  display:flex; align-items:center; justify-content:center;
+  padding:54px 16px 50px;
+}
+body::before{ content:''; position:fixed; inset:0; z-index:90; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.13) 2px, rgba(0,0,0,.13) 4px); }
+body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
+
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px;
+  z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== ESCENA ====== */
+.escena{ display:flex; flex-direction:column; align-items:center; gap:14px; max-width:980px; }
+.titulo{ font-family:'Press Start 2P',monospace; font-size:15px; color:var(--oro); letter-spacing:2px; text-shadow:2px 2px 0 var(--verde-oscuro); text-align:center; }
+.pregunta-top{ font-size:21px; color:var(--crema-dim); text-align:center; max-width:680px; line-height:1.25; }
+
+/* ====== RADIO ====== */
+.radio{ display:flex; gap:24px; align-items:stretch; width:100%; }
+
+/* — Consola — */
+.consola{
+  width:400px; flex-shrink:0;
+  background:linear-gradient(160deg, #2a2a2a, #161616);
+  border:3px solid #3a3a3a; border-radius:10px;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.8), 6px 6px 0 rgba(0,0,0,.6);
+  padding:18px;
+}
+
+/* display LCD */
+.display{
+  background:#05140b; border:2px solid #0c3b1e; border-radius:4px;
+  padding:12px 14px; position:relative; overflow:hidden;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.9);
+}
+.display::after{ content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.25) 2px 3px); }
+.display .linea1{ display:flex; align-items:center; justify-content:space-between; }
+.freq{ font-family:'VT323',monospace; font-size:50px; line-height:.9; color:var(--oro-bright);
+  text-shadow:0 0 10px rgba(245,202,78,.6); }
+.freq small{ font-size:18px; color:var(--crema-dim); margin-left:6px; }
+.onair{
+  font-family:'Press Start 2P',monospace; font-size:8px; color:#5a2018; letter-spacing:1px;
+  border:2px solid #5a2018; padding:5px 8px; border-radius:3px;
+}
+.radio.activo .onair{ color:var(--crema); background:var(--rojo); border-color:var(--rojo);
+  box-shadow:0 0 12px rgba(224,83,60,.7); animation:latido 1s step-end infinite; }
+@keyframes latido{ 0%,100%{opacity:1} 50%{opacity:.55} }
+.estacion-nom{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--verde-claro); letter-spacing:1px; margin-top:8px; }
+.radio.activo .estacion-nom{ color:var(--oro); }
+
+/* VU */
+.vu{ display:flex; gap:3px; align-items:flex-end; height:16px; margin-top:10px; }
+.vu span{ width:5px; height:3px; background:var(--verde-claro); }
+.radio.activo .vu span{ animation:vu .5s ease-in-out infinite; background:var(--oro); }
+.vu span:nth-child(2){ animation-delay:.1s } .vu span:nth-child(3){ animation-delay:.25s }
+.vu span:nth-child(4){ animation-delay:.05s } .vu span:nth-child(5){ animation-delay:.18s }
+.vu span:nth-child(6){ animation-delay:.3s } .vu span:nth-child(7){ animation-delay:.12s }
+@keyframes vu{ 0%,100%{height:3px} 50%{height:16px} }
+
+/* dial / escala */
+.dial{ position:relative; height:46px; margin:16px 0 14px;
+  background:linear-gradient(180deg,#d9cba0,#bda86f); border:2px solid #1a1a1a; border-radius:3px; overflow:hidden; }
+.escala{ position:absolute; inset:0;
+  background:repeating-linear-gradient(90deg, #2a2418 0 1px, transparent 1px 10px); opacity:.5; }
+.marca{ position:absolute; top:4px; transform:translateX(-50%);
+  font-family:'Press Start 2P',monospace; font-size:6px; color:#2a2418; }
+.aguja{ position:absolute; top:0; bottom:0; width:3px; background:var(--rojo);
+  box-shadow:0 0 6px rgba(224,83,60,.8); transition:left .55s cubic-bezier(.4,.1,.2,1); }
+
+/* perilla + presets */
+.fila{ display:flex; gap:14px; align-items:center; }
+.perilla{ width:56px; height:56px; flex-shrink:0; border-radius:50%; cursor:pointer;
+  background:radial-gradient(circle at 35% 30%, #555, #111); border:2px solid #000;
+  box-shadow:inset 0 0 8px rgba(0,0,0,.8), 2px 2px 0 rgba(0,0,0,.5);
+  position:relative; transition:transform .5s ease; }
+.perilla::after{ content:''; position:absolute; top:5px; left:50%; transform:translateX(-50%);
+  width:3px; height:16px; background:var(--oro); border-radius:2px; }
+.presets{ display:grid; grid-template-columns:1fr 1fr; gap:7px; flex:1; }
+.preset{ background:rgba(255,255,255,.04); border:2px solid #444; color:var(--crema-dim);
+  font-family:'Press Start 2P',monospace; font-size:6px; letter-spacing:.5px; line-height:1.5;
+  padding:6px 7px; cursor:pointer; text-align:left; transition:all .14s; }
+.preset:hover{ border-color:var(--oro); color:var(--crema); }
+.preset.activa{ background:var(--oro); color:var(--verde-oscuro); border-color:var(--oro-bright); box-shadow:0 0 12px rgba(224,180,60,.5); }
+.preset b{ display:block; font-size:9px; }
+
+/* — Visor / transmisión — */
+.visor{ flex:1; position:relative; display:flex; flex-direction:column;
+  background:rgba(5,20,11,.92); border:3px solid var(--oro);
+  box-shadow:6px 6px 0 rgba(0,0,0,.6), inset 0 0 30px rgba(0,0,0,.5); overflow:hidden; }
+.visor-top{ display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(224,180,60,.3); padding:12px 16px; }
+.ahora{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--oro); letter-spacing:1px; }
+.controles{ display:flex; gap:8px; }
+.btn{ background:rgba(18,61,32,.8); border:2px solid var(--oro); color:var(--oro);
+  font-family:'Press Start 2P',monospace; font-size:7px; letter-spacing:1px; padding:7px 10px; cursor:pointer;
+  transition:all .12s; }
+.btn:hover{ background:var(--verde-claro); color:var(--oro-bright); }
+.transcripcion{ flex:1; padding:18px 22px; font-size:21px; line-height:1.5; color:var(--crema-dim);
+  white-space:pre-wrap; overflow-y:auto; max-height:420px; min-height:420px; cursor:pointer; }
+.transcripcion::-webkit-scrollbar{ width:7px; }
+.transcripcion::-webkit-scrollbar-thumb{ background:rgba(224,180,60,.4); }
+.cursor-rad{ color:var(--oro); }
+.radio.activo .cursor-rad{ animation:parp .5s step-end infinite; }
+@keyframes parp{ 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* estática visual al sintonizar */
+.ruido{ position:absolute; inset:0; opacity:0; pointer-events:none; z-index:5; transition:opacity .12s;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px); }
+.visor.sintonizando .ruido{ opacity:.85; animation:ruidomov .12s steps(2) infinite; }
+@keyframes ruidomov{ 0%{transform:translate(0,0)} 100%{transform:translate(3px,2px)} }
+
+@media(max-width:880px){
+  .radio{ flex-direction:column; align-items:center; }
+  .consola{ width:100%; max-width:420px; }
+  .visor{ width:100%; max-width:560px; }
+  .transcripcion{ min-height:280px; max-height:280px; }
+}
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  PANORAMA SOCIAL</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <main class="escena">
+    <div class="titulo">📻 EMISORA EL COCODRILO · FM 2005</div>
+    <div class="pregunta-top">¿El autor ayuda a entender el panorama social de la Colombia y la época de entonces?</div>
+
+    <div class="radio" id="radio">
+      <!-- CONSOLA -->
+      <div class="consola">
+        <div class="display">
+          <div class="linea1">
+            <div class="freq"><span id="freqNum">88.5</span><small>FM</small></div>
+            <div class="onair">ON AIR</div>
+          </div>
+          <div class="estacion-nom" id="estacionNom">SINTONÍA</div>
+          <div class="vu"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="dial">
+          <div class="escala"></div>
+          <div class="aguja" id="aguja" style="left:2.5%"></div>
+        </div>
+
+        <div class="fila">
+          <div class="perilla" id="perilla"></div>
+          <div class="presets" id="presets"></div>
+        </div>
+      </div>
+
+      <!-- VISOR -->
+      <div class="visor" id="visor">
+        <div class="ruido"></div>
+        <div class="visor-top">
+          <div class="ahora" id="ahora">AHORA: 88.5 — SINTONÍA</div>
+          <div class="controles">
+            <button class="btn" id="btnAire">▶ ESCUCHAR</button>
+            <button class="btn" id="btnStop">⏹</button>
+          </div>
+        </div>
+        <div class="transcripcion" id="transcripcion"></div>
+      </div>
+    </div>
+  </main>
+
+<!-- ====== LÓGICA (puedes mover esto a panorama-social.js) ====== -->
+<script>
+const estaciones = [
+  { freq:'88.5', nombre:'SINTONÍA', parrafos:[
+    'Sí, considero que Juan Carlos Garay sí ayuda a entender el panorama social de la Colombia de la época, aunque no lo hace de una manera directa ni centrada en la violencia. La nostalgia del melómano no es una novela sobre el conflicto armado, el narcotráfico o la política nacional, pero eso no significa que esté desconectada de su contexto. Al contrario, muestra otra forma de vivir ese momento histórico: desde la intimidad, la cultura, la música y la nostalgia.'
+  ]},
+  { freq:'92.3', nombre:'EL PAÍS EN VIVO', parrafos:[
+    'A comienzos de los años 2000, Colombia seguía atravesada por la violencia, la inseguridad y una fuerte incertidumbre social. En ese ambiente, la novela presenta personajes que no enfrentan el mundo desde la acción política o la denuncia directa, sino desde la necesidad de refugiarse en algo que les dé sentido. En el caso de Francisco Talavera, ese refugio es la música. Su tienda, El Cocodrilo Discos, funciona como un espacio apartado del ruido exterior, donde todavía importan los discos, la conversación, la memoria y la sensibilidad.'
+  ]},
+  { freq:'95.7', nombre:'REFUGIO Y RESISTENCIA', parrafos:[
+    'Por eso, el libro permite entender una parte menos evidente del panorama social colombiano: la forma en que muchas personas buscaban protegerse emocionalmente de un país difícil. La música y el arte aparecen como mecanismos para resistir la soledad, el cambio y la sensación de pérdida. No son simples gustos o adornos culturales, sino formas de sobrevivir emocionalmente en una realidad que muchas veces se sentía hostil.'
+  ]},
+  { freq:'98.1', nombre:'DEL VINILO AL MP3', parrafos:[
+    'Además, la novela ayuda a comprender una transformación cultural importante: el paso de lo análogo a lo digital. A comienzos del siglo XXI, el vinilo y los acetatos fueron perdiendo espacio frente al CD, el MP3 y las nuevas formas de consumo musical. Muchas colecciones familiares comenzaron a venderse, regalarse o desecharse, como si ya no tuvieran valor. Sin embargo, para Francisco esos discos guardan historias, afectos y recuerdos de otras generaciones.',
+    'En ese sentido, la tienda de discos funciona casi como un pequeño museo contra el olvido. Allí se intenta conservar una memoria musical que incluye géneros como el jazz, la salsa clásica, el tango y otras músicas que hacen parte de la historia sentimental de muchas personas. La novela muestra que cuando una sociedad cambia sus formas de escuchar música, también cambia su manera de relacionarse con el pasado.'
+  ]},
+  { freq:'101.9', nombre:'VEREDICTO', parrafos:[
+    'Por eso, creo que el autor sí ayuda a entender la Colombia de entonces, pero desde una mirada distinta. No muestra el país a través de la violencia explícita, sino a través de las emociones, los objetos, los hábitos culturales y las formas de escape de sus personajes. La nostalgia del melómano permite ver que el contexto social de una época no solo se entiende por sus hechos políticos, sino también por aquello que las personas intentan conservar cuando sienten que todo a su alrededor está cambiando.'
+  ]}
+];
+
+const radio       = document.getElementById('radio');
+const freqNum     = document.getElementById('freqNum');
+const estacionNom = document.getElementById('estacionNom');
+const aguja       = document.getElementById('aguja');
+const presetsEl   = document.getElementById('presets');
+const perilla     = document.getElementById('perilla');
+const visor       = document.getElementById('visor');
+const ahora       = document.getElementById('ahora');
+const transcripcion = document.getElementById('transcripcion');
+const btnAire     = document.getElementById('btnAire');
+const btnStop     = document.getElementById('btnStop');
+
+let actual = -1;
+let typer = null;
+let textoActual = '';
+
+/* posición en el dial: 88–108 MHz */
+function pos(freq){ return ((parseFloat(freq) - 88) / 20) * 100; }
+
+/* construir presets */
+estaciones.forEach((e,i)=>{
+  const b = document.createElement('button');
+  b.className = 'preset'; b.dataset.i = i;
+  b.innerHTML = `<b>${e.freq}</b>${e.nombre}`;
+  b.addEventListener('click', ()=> sintonizar(i));
+  presetsEl.appendChild(b);
+
+  const m = document.createElement('div');
+  m.className = 'marca'; m.style.left = pos(e.freq) + '%';
+  m.textContent = e.freq;
+  document.querySelector('.dial').appendChild(m);
+});
+
+function sintonizar(i){
+  if(i===actual) return;
+  actual = i;
+  const e = estaciones[i];
+
+  detenerVoz();
+  if(typer){ clearInterval(typer); typer = null; }
+
+  // mover dial + display
+  aguja.style.left = pos(e.freq) + '%';
+  freqNum.textContent = e.freq;
+  estacionNom.textContent = e.nombre;
+  ahora.textContent = `AHORA: ${e.freq} — ${e.nombre}`;
+  perilla.style.transform = `rotate(${-60 + i*30}deg)`;
+
+  document.querySelectorAll('.preset').forEach(p=> p.classList.toggle('activa', Number(p.dataset.i)===i));
+
+  // estática + sonido de sintonía
+  visor.classList.add('sintonizando');
+  estatica();
+  transcripcion.textContent = '';
+
+  setTimeout(()=>{
+    visor.classList.remove('sintonizando');
+    enganche();
+    radio.classList.add('activo');
+    textoActual = e.parrafos.join('\n\n');
+    teclear(textoActual);
+  }, 650);
+}
+
+/* máquina de escribir (velocidad adaptada al largo, salta con clic) */
+function teclear(txt){
+  let i = 0;
+  const vel = Math.max(6, Math.min(22, Math.floor(7000 / txt.length)));
+  transcripcion.innerHTML = '<span id="tt"></span><span class="cursor-rad">▌</span>';
+  const tt = document.getElementById('tt');
+  typer = setInterval(()=>{
+    tt.textContent = txt.slice(0, i);
+    transcripcion.scrollTop = transcripcion.scrollHeight;
+    if(i++ >= txt.length){ clearInterval(typer); typer = null; }
+  }, vel);
+}
+/* clic en el visor: completa el texto de una */
+transcripcion.addEventListener('click', ()=>{
+  if(typer){ clearInterval(typer); typer = null;
+    transcripcion.innerHTML = textoActual + ' <span class="cursor-rad">▌</span>';
+  }
+});
+
+/* perilla: pasa a la siguiente estación */
+perilla.addEventListener('click', ()=> sintonizar((actual+1) % estaciones.length));
+/* teclado */
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') sintonizar((actual+1) % estaciones.length);
+  if(e.key==='ArrowLeft')  sintonizar((actual-1+estaciones.length) % estaciones.length);
+});
+
+/* ── VOZ: leer en voz alta (Web Speech API) ── */
+btnAire.addEventListener('click', ()=>{
+  if(!('speechSynthesis' in window) || !textoActual) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(textoActual);
+  u.lang = 'es-ES'; u.rate = 1; u.pitch = 1;
+  const voces = window.speechSynthesis.getVoices();
+  const vEs = voces.find(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(vEs) u.voice = vEs;
+  u.onstart = ()=> radio.classList.add('activo');
+  u.onend   = ()=> {};
+  window.speechSynthesis.speak(u);
+});
+btnStop.addEventListener('click', detenerVoz);
+function detenerVoz(){ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }
+
+/* ── sonidos sintetizados ── */
+let audioCtx=null;
+function getCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function estatica(){
+  try{
+    const ctx=getCtx(); const dur=.6;
+    const buf=ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let k=0;k<d.length;k++){ d[k]=(Math.random()*2-1)*.5; }
+    const src=ctx.createBufferSource(); src.buffer=buf;
+    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1800; bp.Q.value=.4;
+    const g=ctx.createGain();
+    g.gain.setValueAtTime(.10, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+dur);
+    src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start();
+  }catch(_){}
+}
+function enganche(){
+  try{
+    const ctx=getCtx();
+    const osc=ctx.createOscillator(), g=ctx.createGain();
+    osc.connect(g); g.connect(ctx.destination);
+    osc.type='sine';
+    osc.frequency.setValueAtTime(660, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(990, ctx.currentTime+.08);
+    g.gain.setValueAtTime(.08, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+.18);
+    osc.start(); osc.stop(ctx.currentTime+.18);
+  }catch(_){}
+}
+
+/* arranca en la primera estación */
+sintonizar(0);
+</script>
+</body>
+</html>
