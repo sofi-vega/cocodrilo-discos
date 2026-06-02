@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Música y literatura | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a musica-literatura.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Press+Start+2P&display=swap');
+
+:root{
+  --oro:#e0b43c;
+  --oro-bright:#f5ca4e;
+  --verde:#123d20;
+  --verde-claro:#1e6b3a;
+  --verde-oscuro:#0a2412;
+  --crema:#fff4c4;
+  --papel:#f6efdd;
+  --papel-2:#efe6cd;
+  --tinta:#211a12;
+  --tinta-suave:#5a4d3a;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:#100c07;
+  min-height:100vh; overflow-y:auto;
+  font-family:'Lora', Georgia, serif;
+  color:var(--tinta);
+  padding:54px 16px 70px;
+}
+
+/* ── Barra de título + Volver ── */
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px;
+  z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== REVISTA ====== */
+.revista{
+  max-width:960px; margin:18px auto;
+  background:linear-gradient(180deg, var(--papel), var(--papel-2));
+  border:1px solid #b9a87e;
+  box-shadow:0 26px 60px rgba(0,0,0,.6);
+  overflow:hidden;
+}
+
+/* ── PORTADA / HERO ── */
+.hero{
+  position:relative; overflow:hidden;
+  background:linear-gradient(160deg, #16451f 0%, var(--verde) 45%, var(--verde-oscuro) 100%);
+  color:var(--crema);
+  padding:34px 52px 40px;
+  border-bottom:4px solid var(--oro);
+}
+.hero::after{ /* scanlines retro */
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.10) 3px, rgba(0,0,0,.10) 5px);
+}
+.hero-top{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:12px;
+  letter-spacing:3px; text-transform:uppercase; color:var(--oro);
+  border-bottom:1px solid rgba(224,180,60,.4); padding-bottom:12px;
+}
+.hero-kicker{
+  font-family:'Oswald',sans-serif; font-weight:500; font-size:13px;
+  letter-spacing:5px; text-transform:uppercase; color:var(--oro-bright);
+  margin-top:22px;
+}
+.hero-titulo{
+  font-family:'Anton', sans-serif; font-weight:400;
+  font-size:88px; line-height:.92; text-transform:uppercase;
+  letter-spacing:1px; margin:6px 0 18px; color:var(--crema);
+  text-shadow:3px 3px 0 rgba(0,0,0,.35);
+}
+.hero-titulo span{ color:var(--oro); }
+.hero-deck{
+  font-family:'Lora',serif; font-style:italic; font-size:19px;
+  line-height:1.5; max-width:620px; color:#ecdfb4;
+}
+.hero-deck em{ font-style:normal; font-weight:600; color:var(--crema); }
+.hero-credito{ display:flex; align-items:center; gap:14px; margin-top:24px; }
+.hero-credito .avatar{
+  width:52px; height:52px; flex-shrink:0; border-radius:50%;
+  background:linear-gradient(135deg, var(--oro-bright), #a87c1a);
+  border:2px solid var(--crema);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Press Start 2P',monospace; font-size:12px; color:var(--verde-oscuro);
+}
+.hero-credito .quien{ font-family:'Oswald',sans-serif; font-weight:600; font-size:18px; letter-spacing:1px; color:var(--crema); }
+.hero-credito .sub{ font-family:'Oswald',sans-serif; font-weight:400; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--oro); }
+
+/* disco decorativo */
+.disco-deco{
+  position:absolute; top:-70px; right:-70px; width:230px; height:230px; border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at center, rgba(0,0,0,.5) 0 2px, rgba(255,255,255,.04) 2px 5px);
+  border:6px solid rgba(0,0,0,.3);
+  opacity:.5;
+}
+.disco-deco::after{
+  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:74px; height:74px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, var(--oro-bright), #8a6614);
+}
+
+/* ── CUERPO A DOS COLUMNAS ── */
+.articulo{
+  padding:38px 52px 50px;
+  column-count:2; column-gap:42px; column-rule:1px solid #cdbb8a;
+}
+.qa{ break-inside:avoid-column; margin-bottom:22px; }
+.pregunta{
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:18px;
+  line-height:1.25; text-transform:uppercase; letter-spacing:.5px;
+  color:var(--verde); margin-bottom:9px; break-after:avoid;
+}
+.pregunta .n{
+  font-family:'Anton',sans-serif; font-size:26px; color:var(--oro);
+  margin-right:8px; vertical-align:-2px;
+}
+.respuesta p{ font-size:16px; line-height:1.62; text-align:justify; margin-bottom:11px; }
+.articulo .qa:first-of-type .respuesta p:first-child::first-letter{
+  float:left; font-family:'Anton',sans-serif; font-size:58px; line-height:.74;
+  padding:6px 9px 0 0; color:var(--verde);
+}
+em{ font-style:italic; }
+
+/* ── FRASE DESTACADA (rompe a lo ancho) ── */
+.destacada{
+  column-span:all; margin:14px 0 26px;
+  background:linear-gradient(160deg, var(--verde), var(--verde-oscuro));
+  border-top:4px solid var(--oro); border-bottom:4px solid var(--oro);
+  padding:30px 50px; text-align:center; position:relative;
+}
+.destacada::before{
+  content:'\201C'; position:absolute; top:2px; left:26px;
+  font-family:'Anton',sans-serif; font-size:90px; color:rgba(224,180,60,.45); line-height:1;
+}
+.destacada p{
+  font-family:'Oswald',sans-serif; font-weight:500; font-size:27px; line-height:1.3;
+  color:var(--crema); letter-spacing:.3px;
+}
+.destacada em{ color:var(--oro-bright); font-style:italic; }
+
+/* ── CIERRE ── */
+.qa.cierre{
+  break-inside:avoid-column;
+  background:rgba(18,61,32,.07); border:1px solid #cdbb8a;
+  padding:18px 20px;
+}
+
+@media(max-width:760px){
+  .hero{ padding:26px 24px 32px; }
+  .hero-titulo{ font-size:52px; }
+  .disco-deco{ display:none; }
+  .articulo{ padding:28px 24px 36px; column-count:1; }
+}
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  MÚSICA Y LITERATURA</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <div class="revista">
+    <!-- PORTADA -->
+    <header class="hero">
+      <div class="disco-deco"></div>
+      <div class="hero-top">
+        <span>El Cocodrilo · Revista</span>
+        <span>Entrevista</span>
+      </div>
+      <div class="hero-kicker">Opinión · Rock y Política</div>
+      <h1 class="hero-titulo">Música, memoria <span>y vinilos</span></h1>
+      <p class="hero-deck">En <em>La nostalgia del melómano</em>, Juan Carlos Garay construye una novela donde la música no aparece simplemente como un gusto personal de los personajes, sino como una forma de vivir, recordar y relacionarse con el mundo. En esta entrevista, Sofía Vega, estudiante de Rock y Política, comparte su lectura sobre la relación entre música y literatura en la obra.</p>
+      <div class="hero-credito">
+        <div class="avatar">SV</div>
+        <div>
+          <div class="quien">Sofía Vega</div>
+          <div class="sub">Estudiante de Rock y Política</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ENTREVISTA -->
+    <div class="articulo">
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">01</span> ¿Considera que la relación entre música y literatura está bien lograda en el libro?</h2>
+        <div class="respuesta">
+          <p>Sí, considero que esa relación está muy bien lograda. De hecho, creo que es uno de los aspectos más interesantes de la novela. La música no aparece solo como una referencia cultural o como un elemento decorativo, sino que está completamente integrada a la historia. Los discos, las canciones, las grabaciones extrañas o difíciles de conseguir y, en general, todo el universo del coleccionismo musical, hacen parte del conflicto central de la obra.</p>
+          <p>Además, la música no solo mueve la trama, sino que también ayuda a construir el mundo interior de los personajes. En especial, permite comprender mejor a Francisco Talavera, porque su forma de relacionarse con la música revela su sensibilidad, su soledad, su nostalgia y también su dificultad para adaptarse al presente. Por eso, siento que Garay logra que la música y la literatura funcionen juntas de manera orgánica, sin que una parezca forzada dentro de la otra.</p>
+        </div>
+      </section>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">02</span> ¿De qué manera se nota que la música es más que un simple tema de fondo?</h2>
+        <div class="respuesta">
+          <p>Se nota porque la novela no menciona la música de manera superficial. No es simplemente un libro que nombra artistas o géneros para parecer culto o sofisticado. En este caso, la música tiene una función narrativa y simbólica. A partir de ella se desarrollan los conflictos, las búsquedas y las obsesiones de los personajes.</p>
+          <p>Por ejemplo, la tienda de discos no es solo un escenario cualquiera, sino un espacio cargado de significado. Allí la música se convierte en memoria, en refugio y en una forma de resistencia frente a un mundo que avanza hacia lo inmediato, lo práctico y lo digital. Los discos representan algo más profundo: representan una forma de detener el tiempo y de conservar experiencias, afectos y recuerdos.</p>
+          <p>También se nota en la manera en que la novela se detiene en ciertos detalles relacionados con la escucha. El vinilo, el sonido del acetato, la búsqueda de una grabación rara, todo eso tiene un peso emocional. Entonces, la música no está en el libro como adorno, sino como parte de su estructura y de su sentido.</p>
+        </div>
+      </section>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">03</span> ¿Qué papel cumple Francisco Talavera dentro de esa relación entre música y literatura?</h2>
+        <div class="respuesta">
+          <p>Francisco Talavera es fundamental, porque a través de él la novela muestra hasta qué punto la música puede convertirse en una forma de vida. Él no es simplemente una persona a la que le gustan los discos; es alguien que entiende el mundo a través de ellos. Su tienda, sus gustos musicales, sus recuerdos y hasta sus deseos personales están atravesados por la música.</p>
+          <p>Me parece que el personaje funciona muy bien porque encarna al melómano no solo como coleccionista, sino como alguien profundamente emocional. Para Francisco, escuchar música no es una actividad cualquiera. Es una manera de recordar, de refugiarse, de sentir que todavía existe algo auténtico en medio de un mundo cada vez más rápido y más frío.</p>
+          <p>Desde el punto de vista literario, eso está muy bien logrado porque la música permite conocer al personaje en un nivel más íntimo. Su relación con los discos habla de su carácter, de su visión del pasado y de su necesidad de encontrar sentido en cosas que para otros podrían parecer insignificantes. Así, la literatura logra traducir en palabras una sensibilidad profundamente musical.</p>
+        </div>
+      </section>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">04</span> ¿Qué le aporta el vinilo a la novela?</h2>
+        <div class="respuesta">
+          <p>El vinilo aporta muchísimo, porque no es solo un objeto material, sino un símbolo. En la novela, el vinilo representa la memoria, el paso del tiempo y también el valor de lo imperfecto. A diferencia de los formatos digitales, que suelen asociarse con la inmediatez y la limpieza técnica, el vinilo conserva huellas: rayones, crujidos, desgaste. Y justamente esas marcas son las que lo vuelven valioso en términos emocionales y simbólicos.</p>
+          <p>Creo que eso está muy bien usado por Garay, porque permite establecer una relación entre el disco y la experiencia humana. Así como un vinilo guarda marcas del tiempo, las personas también llevan consigo recuerdos, pérdidas, nostalgias y cicatrices. Entonces, el disco deja de ser solo un soporte musical y se convierte en una imagen del pasado y de la memoria.</p>
+          <p>Además, el ritual mismo de escuchar un vinilo le da a la novela una atmósfera especial. No es lo mismo poner música de fondo de manera automática que buscar un disco, limpiarlo, poner la aguja y escucharlo con atención. Ese gesto hace que la música se viva con más lentitud y más conciencia, y eso se conecta muy bien con el tono reflexivo y nostálgico del libro.</p>
+        </div>
+      </section>
+
+      <!-- FRASE DESTACADA -->
+      <aside class="destacada">
+        <p>En <em>La nostalgia del melómano</em>, la música no está solo para ambientar la historia: está ahí para darle sentido.</p>
+      </aside>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">05</span> ¿Cree que la novela logra transmitir la experiencia del melómano?</h2>
+        <div class="respuesta">
+          <p>Sí, definitivamente. Uno de los grandes logros del libro es que hace comprensible, incluso para alguien que no sea coleccionista, la pasión del melómano. La novela transmite muy bien esa mezcla de fascinación, obsesión, sensibilidad y búsqueda que caracteriza a las personas que viven la música de una manera intensa.</p>
+          <p>No se trata solo de tener discos, sino de todo lo que esos discos significan: la historia que hay detrás, la dificultad de encontrarlos, el valor afectivo que adquieren y la relación entre una canción y un momento de la vida. La novela muestra que para un melómano una grabación no es solo una pieza musical, sino casi un fragmento de existencia.</p>
+          <p>Eso me parece importante porque hace que el lector entienda la lógica emocional del personaje. Tal vez desde afuera algunas actitudes de Francisco podrían parecer exageradas, pero dentro de la novela tienen sentido precisamente porque la música está ligada a su identidad. Garay logra que esa pasión se sienta auténtica y no caricaturesca.</p>
+        </div>
+      </section>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">06</span> ¿Cómo se relacionan la música y la nostalgia dentro del libro?</h2>
+        <div class="respuesta">
+          <p>La relación es muy fuerte, porque la nostalgia es prácticamente uno de los ejes de la novela. La música tiene la capacidad de activar recuerdos, de devolvernos a otro momento de la vida, y eso es algo que el libro aprovecha muy bien. En <em>La nostalgia del melómano</em>, las canciones y los discos funcionan como puentes hacia el pasado.</p>
+          <p>En Francisco, eso se ve con mucha claridad. Su relación con la música está ligada a un deseo de conservar lo que desaparece: ciertas formas de escuchar, ciertos objetos, ciertas emociones e incluso cierta manera de vivir. Por eso, la música se convierte en una forma de resistencia frente al cambio.</p>
+          <p>Pero la nostalgia no aparece solo como algo bonito o romántico. También tiene un lado problemático, porque puede hacer que una persona quede demasiado aferrada al pasado. En ese sentido, la novela no idealiza completamente esa nostalgia, sino que muestra tanto su belleza como sus límites. Y creo que ahí también está uno de sus aciertos.</p>
+        </div>
+      </section>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">07</span> ¿Diría que la forma de escribir de Juan Carlos Garay también ayuda a unir música y literatura?</h2>
+        <div class="respuesta">
+          <p>Sí, porque la prosa acompaña muy bien el universo de la novela. No es una escritura acelerada, sino más bien pausada y detallista, lo cual combina muy bien con la idea de la escucha atenta. Así como un disco se disfruta con tiempo, la narración también invita a leer con calma, fijándose en las emociones, en los ambientes y en los pequeños gestos.</p>
+          <p>Me parece que Garay escribe de una forma que permite sentir el peso simbólico de los objetos y de los recuerdos. La tienda, los discos, las conversaciones sobre música y las búsquedas del protagonista no se presentan de manera fría, sino con una sensibilidad que hace creíble ese mundo. Eso ayuda mucho a que la música no se quede solo en el contenido, sino que también influya en la atmósfera de la obra.</p>
+          <p>No diría necesariamente que la novela "suena" como una canción, pero sí creo que tiene un ritmo propio y una forma de construir el ambiente que se relaciona muy bien con la experiencia musical.</p>
+        </div>
+      </section>
+
+      <section class="qa">
+        <h2 class="pregunta"><span class="n">08</span> ¿Qué le dice esta novela a un lector de hoy?</h2>
+        <div class="respuesta">
+          <p>Creo que le dice varias cosas. Por un lado, invita a pensar en la relación que tenemos con la música y con la memoria. En una época donde casi todo es inmediato, digital y desechable, la novela recuerda el valor de escuchar con atención, de conservar ciertos objetos y de reconocer que la cultura también tiene una dimensión emocional.</p>
+          <p>Por otro lado, también habla de la soledad, de la dificultad de conectar con otros y de la manera en que muchas personas buscan refugio en sus pasiones. Eso hace que la novela siga siendo actual, porque aunque hable de vinilos y de un mundo muy particular, en el fondo trata temas bastante universales: el paso del tiempo, la necesidad de sentido, la idealización del pasado y la búsqueda de belleza en medio de la rutina.</p>
+          <p>Entonces, más que ser un libro solo para amantes de la música, me parece que es una novela que puede interesar a cualquier lector que quiera pensar en cómo los gustos, los recuerdos y las obsesiones también construyen la identidad de una persona.</p>
+        </div>
+      </section>
+
+      <section class="qa cierre">
+        <h2 class="pregunta"><span class="n">09</span> En conclusión, ¿considera que la relación entre música y literatura sí está bien lograda?</h2>
+        <div class="respuesta">
+          <p>Sí, sin duda. Considero que está muy bien lograda porque la música no aparece de forma superficial, sino como una dimensión central de la novela. A través de ella se construyen los personajes, se desarrolla el conflicto, se define la atmósfera y se profundiza en temas como la memoria, la nostalgia y el paso del tiempo.</p>
+          <p>Además, la obra demuestra que la música y la literatura pueden complementarse muy bien, porque ambas trabajan con la emoción, con la sensibilidad y con la experiencia del tiempo. Una canción puede contar una historia, así como una novela puede hacernos sentir la textura emocional de una canción o de un disco. En <em>La nostalgia del melómano</em>, esa convergencia funciona muy bien y es, justamente, una de las razones por las que la novela resulta tan interesante.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
