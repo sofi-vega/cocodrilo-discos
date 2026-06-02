@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bibliografía y fuentes | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a bibliografia.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root{
+  --oro:#e0b43c; --verde:#123d20; --verde-claro:#1e6b3a; --verde-oscuro:#0a2412; --crema:#fff4c4;
+  --p:#5bfb78;        /* fósforo verde brillante */
+  --p-dim:#2f9d4c;    /* verde apagado */
+  --p-bright:#aaffb9;
+  --pantalla:#04230f;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:radial-gradient(ellipse at 50% 30%, #14110b 0%, #060604 75%);
+  min-height:100vh; overflow-y:auto;
+  font-family:'VT323','Courier New',monospace; color:var(--p);
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:54px 16px 50px;
+}
+
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px; z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== MONITOR ====== */
+.monitor{
+  width:760px; max-width:96vw; margin-top:18px;
+  background:linear-gradient(160deg, #d2c9b0, #9c9277);
+  border-radius:22px; padding:22px 22px 8px;
+  box-shadow:0 26px 50px rgba(0,0,0,.6), inset 0 2px 4px rgba(255,255,255,.4), inset 0 -6px 12px rgba(0,0,0,.3);
+  border:2px solid #7d745c;
+}
+
+/* pantalla */
+.pantalla{
+  position:relative; height:70vh; min-height:430px; overflow:hidden;
+  background:radial-gradient(ellipse at center, #06340f 0%, var(--pantalla) 70%, #021608 100%);
+  border-radius:18px; border:3px solid #1a1a14;
+  box-shadow:inset 0 0 60px rgba(0,0,0,.9), inset 0 0 14px rgba(91,251,120,.15);
+  padding:22px 26px;
+  animation:encendido 1.6s ease;
+}
+@keyframes encendido{ from{ filter:brightness(2.2); transform:scaleY(.6); opacity:.2; } to{ filter:none; transform:none; opacity:1; } }
+.pantalla::after{ /* scanlines + viñeta */
+  content:''; position:absolute; inset:0; pointer-events:none; border-radius:18px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.18) 2px 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.5) 100%);
+  animation:flick .14s steps(2) infinite;
+}
+@keyframes flick{ 0%{opacity:.96} 100%{opacity:1} }
+
+/* contenido scrolleable */
+.term{ position:relative; z-index:1; height:100%; overflow-y:auto; padding-right:10px;
+  font-size:20px; line-height:1.35; text-shadow:0 0 5px rgba(91,251,120,.45); }
+.term::-webkit-scrollbar{ width:10px; }
+.term::-webkit-scrollbar-track{ background:rgba(91,251,120,.05); }
+.term::-webkit-scrollbar-thumb{ background:rgba(91,251,120,.35); border-radius:0; }
+
+.boot{ color:var(--p-dim); }
+.cmd{ color:var(--p-bright); }
+.cmd .c{ color:var(--p); }
+.head{ color:var(--p-bright); margin:12px 0 14px; border-bottom:1px solid rgba(91,251,120,.3); padding-bottom:6px; }
+
+.reg{ margin-bottom:11px; }
+.reg .l1{ color:var(--p); }
+.reg .n{ color:var(--p-bright); }
+.reg .src{ color:var(--p-dim); }
+.reg a{ color:var(--p); text-decoration:none; word-break:break-all; opacity:.92; }
+.reg a:hover{ background:var(--p); color:var(--pantalla); text-shadow:none; }
+.reg a::before{ content:'> '; color:var(--p-dim); }
+
+.prompt{ margin-top:16px; color:var(--p-bright); }
+.cursor{ display:inline-block; width:11px; height:20px; background:var(--p); margin-left:2px; vertical-align:-3px; animation:parp .8s step-end infinite; }
+@keyframes parp{ 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* chin del monitor */
+.chin{ display:flex; align-items:center; justify-content:space-between; padding:12px 12px 6px; }
+.marca{ font-family:'Press Start 2P',monospace; font-size:9px; color:#5a5340; letter-spacing:1px; }
+.led{ display:flex; align-items:center; gap:8px; font-family:'VT323',monospace; font-size:16px; color:#5a5340; }
+.led .luz{ width:10px; height:10px; border-radius:50%; background:#5bfb78; box-shadow:0 0 8px #5bfb78; animation:parp 1.6s step-end infinite; }
+
+@media(max-width:560px){
+  .term{ font-size:17px; }
+  .pantalla{ padding:16px 16px; }
+}
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  BIBLIOGRAFÍA</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <div class="monitor">
+    <div class="pantalla">
+      <div class="term" id="term">
+        <div class="boot">EL COCODRILO DISCOS (R) — SISTEMA DE ARCHIVOS<br>(C) 2005  COCODRILO-DOS  v1.0<br>640K RAM  OK</div>
+        <div class="cmd">C:\TESIS\FUENTES&gt; <span class="c">type bibliografia.txt</span></div>
+        <div class="head">BIBLIOGRAFÍA Y FUENTES — 26 registros</div>
+
+        <div class="reg"><div class="l1"><span class="n">[01]</span> Juan Carlos Garay (periodista). <span class="src">Wikipedia.</span></div><a href="https://es.wikipedia.org/wiki/Juan_Carlos_Garay_(periodista)" target="_blank" rel="noopener">https://es.wikipedia.org/wiki/Juan_Carlos_Garay_(periodista)</a></div>
+        <div class="reg"><div class="l1"><span class="n">[02]</span> "La noche y la melodía: un viaje íntimo con Juan Carlos Garay". <span class="src">Pulzo.</span></div><a href="https://www.pulzo.com/vivir-bien/noche-melodia-viaje-intimo-con-juan-carlos-garay-PP4946532" target="_blank" rel="noopener">https://www.pulzo.com/vivir-bien/noche-melodia-viaje-intimo-con-juan-carlos-garay-PP4946532</a></div>
+        <div class="reg"><div class="l1"><span class="n">[03]</span> "Juan Carlos Garay". <span class="src">Cartagena Music Festival.</span></div><a href="https://cartagenamusicfestival.com/role-member/juan-carlos-garay/" target="_blank" rel="noopener">https://cartagenamusicfestival.com/role-member/juan-carlos-garay/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[04]</span> "La nostalgia del melómano 2019". <span class="src">Reading Colombia, Cámara Colombiana del Libro.</span></div><a href="https://camlibro.com.co/reading_colombia/editoriales-2019/icono-2019/la-nostalgia-del-melomano-2019/" target="_blank" rel="noopener">https://camlibro.com.co/reading_colombia/editoriales-2019/icono-2019/la-nostalgia-del-melomano-2019/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[05]</span> "La nostalgia del melómano, Juan Carlos Garay". <span class="src">Radio Nacional de Colombia.</span></div><a href="https://www.radionacional.co/cultura/detras-de-la-nostalgia-del-melomano" target="_blank" rel="noopener">https://www.radionacional.co/cultura/detras-de-la-nostalgia-del-melomano</a></div>
+        <div class="reg"><div class="l1"><span class="n">[06]</span> "Juan Carlos Garay". <span class="src">Revista El Malpensante.</span></div><a href="https://elmalpensante.com/autor/juan-carlos-garay" target="_blank" rel="noopener">https://elmalpensante.com/autor/juan-carlos-garay</a></div>
+        <div class="reg"><div class="l1"><span class="n">[07]</span> "Juan Carlos Garay Acevedo". <span class="src">Ícono Editorial.</span></div><a href="https://www.iconoeditorial.com/juan-carlos-garay-acevedo/" target="_blank" rel="noopener">https://www.iconoeditorial.com/juan-carlos-garay-acevedo/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[08]</span> "La nostalgia del melómano". <span class="src">La Nación.</span></div><a href="https://www.lanacion.com.ar/espectaculos/la-nostalgia-del-melomano-nid745517/" target="_blank" rel="noopener">https://www.lanacion.com.ar/espectaculos/la-nostalgia-del-melomano-nid745517/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[09]</span> "La canción de la luna". <span class="src">Mohán-Crítica Literaria.</span></div><a href="http://criticamohan.blogspot.com/2011/05/la-cancion-de-la-luna.html" target="_blank" rel="noopener">http://criticamohan.blogspot.com/2011/05/la-cancion-de-la-luna.html</a></div>
+        <div class="reg"><div class="l1"><span class="n">[10]</span> "Entrevista: Juan Carlos Garay sobre el libro Balsa de fuego". <span class="src">Revista Semana.</span></div><a href="https://www.semana.com/entrevista-juan-carlos-garay-sobre-el-libro-balsa-de-fuego/495696/" target="_blank" rel="noopener">https://www.semana.com/entrevista-juan-carlos-garay-sobre-el-libro-balsa-de-fuego/495696/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[11]</span> Borealis, Juan Carlos Garay. <span class="src">Tornamesa.</span></div><a href="https://www.tornamesa.co/libro/borealis_100556" target="_blank" rel="noopener">https://www.tornamesa.co/libro/borealis_100556</a></div>
+        <div class="reg"><div class="l1"><span class="n">[12]</span> "Un libro para melómanos". <span class="src">Revistas UNAB.</span></div><a href="https://revistas.unab.edu.co/index.php/laterceraorilla/article/download/3082/2575/9361" target="_blank" rel="noopener">https://revistas.unab.edu.co/index.php/laterceraorilla/article/download/3082/2575/9361</a></div>
+        <div class="reg"><div class="l1"><span class="n">[13]</span> La nostalgia del melómano, Juan Carlos Garay. <span class="src">Storytel México.</span></div><a href="https://www.storytel.com/co/books/la-nostalgia-del-mel%C3%B3mano-536852" target="_blank" rel="noopener">https://www.storytel.com/co/books/la-nostalgia-del-mel%C3%B3mano-536852</a></div>
+        <div class="reg"><div class="l1"><span class="n">[14]</span> La nostalgia del melómano, Juan Carlos Garay. <span class="src">Google Books.</span></div><a href="https://books.google.com/books/about/La_nostalgia_del_mel%C3%B3mano.html?id=e-YvAAAAIAAJ" target="_blank" rel="noopener">https://books.google.com/books/about/La_nostalgia_del_mel%C3%B3mano.html?id=e-YvAAAAIAAJ</a></div>
+        <div class="reg"><div class="l1"><span class="n">[15]</span> La nostalgia del melómano, Juan Carlos Garay. <span class="src">Buscalibre Chile.</span></div><a href="https://www.buscalibre.cl/libro-la-nostalgia-del-melomano/9789585472143/p/53196592" target="_blank" rel="noopener">https://www.buscalibre.cl/libro-la-nostalgia-del-melomano/9789585472143/p/53196592</a></div>
+        <div class="reg"><div class="l1"><span class="n">[16]</span> "Literatura colombiana: ocho novelas sobre música". <span class="src">Radio Nacional de Colombia.</span></div><a href="https://www.radionacional.co/cultura/literatura/literatura-colombiana-ocho-novelas-sobre-musica" target="_blank" rel="noopener">https://www.radionacional.co/cultura/literatura/literatura-colombiana-ocho-novelas-sobre-musica</a></div>
+        <div class="reg"><div class="l1"><span class="n">[17]</span> "Literatura y música: cuento, novela y poesía colombiana del siglo XXI". <span class="src">ResearchGate.</span></div><a href="https://www.researchgate.net/publication/384327410_Literatura_y_musica_Cuento_novela_y_poesia_colombiana_del_siglo_XXI" target="_blank" rel="noopener">https://www.researchgate.net/publication/384327410_Literatura_y_musica_Cuento_novela_y_poesia_colombiana_del_siglo_XXI</a></div>
+        <div class="reg"><div class="l1"><span class="n">[18]</span> La nostalgia del melómano. <span class="src">Ícono Editorial.</span></div><a href="https://www.iconoeditorial.com/product/la-nostalgia-del-melomano/" target="_blank" rel="noopener">https://www.iconoeditorial.com/product/la-nostalgia-del-melomano/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[19]</span> La nostalgia del melómano, Juan Carlos Garay. <span class="src">Buscalibre Colombia.</span></div><a href="https://www.buscalibre.com.co/libro-la-nostalgia-del-melomano/9789585472143/p/53196592" target="_blank" rel="noopener">https://www.buscalibre.com.co/libro-la-nostalgia-del-melomano/9789585472143/p/53196592</a></div>
+        <div class="reg"><div class="l1"><span class="n">[20]</span> La nostalgia del melómano, Juan Carlos Garay. <span class="src">Tornamesa.</span></div><a href="https://www.tornamesa.co/libro/la-nostalgia-del-melomano_79852" target="_blank" rel="noopener">https://www.tornamesa.co/libro/la-nostalgia-del-melomano_79852</a></div>
+        <div class="reg"><div class="l1"><span class="n">[21]</span> "Ed Sheeran". <span class="src">Rolling Stone en Español.</span></div><a href="https://es.rollingstone.com/wp-content/uploads/2024/07/RSEE_17_ED_SHEEERAN_ABR.pdf" target="_blank" rel="noopener">https://es.rollingstone.com/wp-content/uploads/2024/07/RSEE_17_ED_SHEEERAN_ABR.pdf</a></div>
+        <div class="reg"><div class="l1"><span class="n">[22]</span> Encuesta Nacional de Lectura — ENLEC. <span class="src">DANE.</span></div><a href="https://www.dane.gov.co/index.php/estadisticas-por-tema/cultura/encuesta-nacional-de-lectura-enlec" target="_blank" rel="noopener">https://www.dane.gov.co/index.php/estadisticas-por-tema/cultura/encuesta-nacional-de-lectura-enlec</a></div>
+        <div class="reg"><div class="l1"><span class="n">[23]</span> "Hábitos de lectura, asistencia a bibliotecas y compra de libros en Colombia 2023". <span class="src">Cámara Colombiana del Libro.</span></div><a href="https://camlibro.com.co/habitos-de-lectura-2023/" target="_blank" rel="noopener">https://camlibro.com.co/habitos-de-lectura-2023/</a></div>
+        <div class="reg"><div class="l1"><span class="n">[24]</span> "Hábito de lectura en Colombia". <span class="src">Tomás Noticias, Universidad Santo Tomás.</span></div><a href="https://tomasnoticias.usta.edu.co/h%C3%A1bito-de-lectura-en-colombia" target="_blank" rel="noopener">https://tomasnoticias.usta.edu.co/h%C3%A1bito-de-lectura-en-colombia</a></div>
+        <div class="reg"><div class="l1"><span class="n">[25]</span> "Wattpad y lectura digital: incremento de hábitos de lectura en jóvenes". <span class="src">ResearchGate.</span></div><a href="https://www.researchgate.net/publication/377548459_Wattpad_y_lectura_digital_incremento_de_habitos_de_lectura_en_jovenes" target="_blank" rel="noopener">https://www.researchgate.net/publication/377548459_Wattpad_y_lectura_digital_incremento_de_habitos_de_lectura_en_jovenes</a></div>
+        <div class="reg"><div class="l1"><span class="n">[26]</span> "Prácticas y percepciones de lectura en adolescentes y jóvenes". <span class="src">Organización de Estados Iberoamericanos.</span></div><a href="https://oei.int/wp-content/uploads/2026/01/digital-oei-praucticas-y-percepciones-de-lectura-en-adolescentes-y-jouvenes-estudio-exploratorio-2025.pdf" target="_blank" rel="noopener">https://oei.int/wp-content/uploads/2026/01/digital-oei-praucticas-y-percepciones-de-lectura-en-adolescentes-y-jouvenes-estudio-exploratorio-2025.pdf</a></div>
+
+        <div class="prompt">C:\TESIS\FUENTES&gt; _<span class="cursor"></span></div>
+      </div>
+    </div>
+
+    <div class="chin">
+      <div class="marca">COCODRILO-PC</div>
+      <div class="led"><span class="luz"></span> POWER</div>
+    </div>
+  </div>
+</body>
+</html>
