@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contexto | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a contexto.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap');
+
+:root{
+  --oro:#e0b43c;
+  --verde:#123d20;
+  --verde-claro:#1e6b3a;
+  --verde-oscuro:#0a2412;
+  --papel:#f3ead2;
+  --papel-2:#ece0c0;
+  --tinta:#1c1813;
+  --tinta-suave:#4a3f30;
+  --fondo:#15110b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:#1a160f;
+  min-height:100vh;
+  overflow-y:auto;
+  font-family:'PT Serif', Georgia, serif;
+  color:var(--tinta);
+  padding:54px 16px 60px;
+}
+
+/* ── Barra de título + Volver ── */
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:#fff4c4;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px;
+  z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:#fff4c4;
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== HOJA DE PERIÓDICO ====== */
+.periodico{
+  max-width:920px; margin:18px auto;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(120,90,40,.08), transparent 30%),
+    radial-gradient(circle at 82% 80%, rgba(120,90,40,.08), transparent 30%),
+    linear-gradient(180deg, var(--papel), var(--papel-2));
+  border:1px solid #b9a87e;
+  box-shadow:0 24px 50px rgba(0,0,0,.55);
+  padding:34px 44px 46px;
+}
+.periodico::before{
+  content:''; display:block; height:4px; margin:-10px 0 16px;
+  background:repeating-linear-gradient(90deg, var(--oro) 0 10px, transparent 10px 16px);
+  opacity:.5;
+}
+
+/* ── Cabecera ── */
+.meta-top{
+  display:flex; justify-content:center; align-items:center;
+  font-family:'PT Serif',serif; font-size:12px; letter-spacing:.5px;
+  color:var(--tinta-suave); text-transform:uppercase;
+  border-bottom:1px solid var(--tinta); padding-bottom:6px;
+}
+.nameplate{
+  font-family:'UnifrakturMaguntia', serif; font-weight:400;
+  font-size:74px; line-height:1; text-align:center;
+  color:var(--tinta); margin:14px 0 6px;
+}
+.tagline{
+  text-align:center; font-family:'Playfair Display',serif; font-style:italic;
+  font-size:16px; color:var(--tinta-suave); letter-spacing:.5px;
+}
+.fecha-row{
+  display:flex; justify-content:center; gap:14px; align-items:center;
+  font-family:'PT Serif',serif; font-size:12px; letter-spacing:1px;
+  text-transform:uppercase; color:var(--tinta);
+  border-top:3px double var(--tinta); border-bottom:3px double var(--tinta);
+  margin-top:12px; padding:6px 0;
+}
+.fecha-row span{ opacity:.55; }
+
+/* ── Kickers ── */
+.kicker{
+  font-family:'Playfair Display',serif; font-weight:700;
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--verde); margin-bottom:6px;
+}
+
+/* ── Banner del informe ── */
+.banner{ margin-top:24px; text-align:center; }
+.titular{
+  font-family:'Playfair Display',serif; font-weight:900;
+  font-size:46px; line-height:1.04; color:#14110c; margin:4px auto 10px;
+  max-width:760px;
+}
+.subtitular{
+  font-family:'Playfair Display',serif; font-style:italic; font-weight:400;
+  font-size:21px; color:var(--tinta-suave);
+  max-width:680px; margin:0 auto 14px; line-height:1.35;
+}
+.byline{
+  font-size:12px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--tinta-suave);
+  border-top:1px solid var(--tinta); border-bottom:1px solid var(--tinta);
+  padding:6px 0; margin:0 auto 20px; max-width:440px;
+}
+
+/* ── Texto en columnas ── */
+.cols{ column-count:2; column-gap:34px; column-rule:1px solid #c3b288; }
+.cols p, .seccion p{
+  font-size:16px; line-height:1.6; text-align:justify;
+  margin-bottom:12px; hyphens:auto;
+}
+.dropcap::first-letter{
+  float:left; font-family:'Playfair Display',serif; font-weight:900;
+  font-size:60px; line-height:.78; padding:6px 8px 0 0; color:var(--verde);
+}
+
+/* ── Separadores ── */
+.separador{ height:0; border-top:3px double var(--tinta); margin:24px 0; }
+
+/* ── Recuadro destacado ── */
+.recuadro{
+  border-top:2px solid var(--tinta); border-bottom:2px solid var(--tinta);
+  padding:16px 24px; margin:8px 0; text-align:center;
+  background:rgba(224,180,60,.08);
+}
+.recuadro blockquote{
+  font-family:'Playfair Display',serif; font-style:italic; font-weight:700;
+  font-size:24px; line-height:1.35; color:#14110c;
+}
+.recuadro .cita-pie{
+  font-family:'PT Serif',serif; font-size:12px;
+  letter-spacing:1px; text-transform:uppercase; color:var(--tinta-suave); margin-top:8px;
+}
+
+/* ── Secciones empacadas (estilo diario) ── */
+.secciones{
+  column-count:2; column-gap:34px; column-rule:1px solid #c3b288;
+  margin-top:6px;
+}
+.seccion{
+  break-inside:avoid; -webkit-column-break-inside:avoid;
+  display:inline-block; width:100%; margin-bottom:22px;
+}
+.seccion h3{
+  font-family:'Playfair Display',serif; font-weight:700; font-size:25px;
+  line-height:1.1; color:#14110c; margin-bottom:9px;
+}
+
+/* ── Cierre / editorial ── */
+.cierre{ margin-top:8px; border-top:3px double var(--tinta); padding-top:20px; }
+.cierre h3{
+  font-family:'Playfair Display',serif; font-weight:900; font-size:30px;
+  line-height:1.08; color:#14110c; text-align:center; margin-bottom:6px;
+}
+.cierre .kicker{ text-align:center; }
+
+@media(max-width:760px){
+  .nameplate{ font-size:52px; }
+  .titular{ font-size:32px; }
+  .cols, .secciones{ column-count:1; }
+}
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  CONTEXTO</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <div class="periodico">
+    <!-- CABECERA -->
+    <header>
+      <div class="meta-top">
+        <span>Informe especial</span>
+      </div>
+      <h1 class="nameplate">El Cocodrilo</h1>
+      <div class="tagline">Gaceta del melómano · Cultura y sociedad</div>
+      <div class="fecha-row">
+        Bogotá, Colombia <span>◆</span> 2005 <span>◆</span> Edición especial
+      </div>
+    </header>
+
+    <!-- BANNER DEL INFORME -->
+    <div class="banner">
+      <div class="kicker">Informe especial</div>
+      <h2 class="titular">Colombia entre la violencia, la música y la nostalgia</h2>
+      <div class="subtitular">¿Cuál era el contexto político y social de la Colombia donde se sitúa el relato?</div>
+    </div>
+
+    <!-- NOTA PRINCIPAL -->
+    <article class="seccion" style="display:block; margin-bottom:0;">
+      <div class="kicker">Nación · Política</div>
+      <h3 style="font-size:30px; text-align:center; margin-bottom:14px;">Un país en tensión</h3>
+      <div class="cols">
+        <p class="dropcap">El relato de <em>La nostalgia del melómano</em> se sitúa en una Colombia marcada por un contexto político y social complejo. A comienzos de los años 2000, el país todavía vivía las consecuencias del conflicto armado interno, el narcotráfico, los secuestros, el desplazamiento forzado y la presencia de grupos guerrilleros y paramilitares en distintas regiones. Aunque en las grandes ciudades empezó a sentirse una mejora relativa en la seguridad, el país seguía atravesado por la violencia y por una fuerte sensación de incertidumbre.</p>
+        <p>En esos años, el tema de la seguridad nacional ocupaba un lugar central en la vida política. Después del fracaso del proceso de paz del Caguán, en 2002 llegó a la presidencia Álvaro Uribe Vélez con la propuesta de la Seguridad Democrática. Esta política buscaba recuperar el control del territorio, fortalecer a las Fuerzas Militares y enfrentar directamente a las guerrillas. Para algunos sectores urbanos esto produjo una sensación de mayor orden y confianza; sin embargo, también aumentó la polarización política y dejó abiertas muchas discusiones sobre los costos humanos de la guerra.</p>
+      </div>
+    </article>
+
+    <div class="separador"></div>
+
+    <!-- RECUADRO DESTACADO -->
+    <aside class="recuadro">
+      <blockquote>"La música se presenta como una forma de memoria y de resistencia íntima."</blockquote>
+      <div class="cita-pie">En contexto</div>
+    </aside>
+
+    <div class="separador"></div>
+
+    <!-- SECCIONES INTERMEDIAS -->
+    <div class="secciones">
+      <article class="seccion">
+        <div class="kicker">Nación</div>
+        <h3>La otra cara del país</h3>
+        <p class="dropcap">Aunque en ciudades como Bogotá podía sentirse una vida cultural activa, con universidades, librerías, emisoras, cafés, tiendas de música y espacios artísticos, el país también enfrentaba una crisis humanitaria muy fuerte. Muchas familias campesinas, indígenas y afrodescendientes fueron desplazadas por los enfrentamientos entre guerrillas, paramilitares y fuerza pública. Por eso, mientras una parte de la sociedad urbana intentaba recuperar cierta normalidad, en muchas zonas rurales continuaban el miedo, el desarraigo y la pérdida de tierras.</p>
+        <p>Este contraste es importante para entender la época: Colombia no era un país detenido únicamente en la violencia, pero tampoco podía separarse de ella. La vida cotidiana estaba atravesada por noticias sobre atentados, secuestros, corrupción, masacres y enfrentamientos. Esa realidad aparecía constantemente en los periódicos, en la televisión y en las conversaciones diarias.</p>
+      </article>
+
+      <article class="seccion">
+        <div class="kicker">Cultura</div>
+        <h3>La literatura frente a la violencia</h3>
+        <p class="dropcap">En ese contexto, muchas obras colombianas de finales del siglo XX y comienzos del XXI se enfocaron en representar directamente la violencia, el crimen, el sicariato, el narcotráfico y la marginalidad urbana. Era una literatura muy conectada con la realidad social del país y con la crudeza que se veía en los medios de comunicación.</p>
+        <p>Sin embargo, <em>La nostalgia del melómano</em> toma un camino distinto. Aunque la novela tiene elementos de misterio y una estructura cercana al relato detectivesco, no se centra en asesinatos, mafias ni investigaciones policiales. El misterio gira alrededor de una grabación musical supuestamente única, casi legendaria. De esta manera, Juan Carlos Garay se aleja de la violencia explícita y propone una historia más íntima, relacionada con la música, la memoria, el coleccionismo y la nostalgia.</p>
+      </article>
+
+      <article class="seccion">
+        <div class="kicker">Crónica</div>
+        <h3>El Cocodrilo Discos como refugio</h3>
+        <p class="dropcap">Dentro de este ambiente social, <strong>El Cocodrilo Discos</strong>, la tienda de Francisco Talavera, funciona como un refugio frente al ruido del mundo exterior. Mientras afuera está la Colombia acelerada, violenta y cambiante de comienzos del siglo XXI, dentro de la tienda se conserva un universo más lento, hecho de vinilos, acetatos, conversaciones musicales y recuerdos.</p>
+        <p>Para Francisco, la música no es solo un gusto personal, sino una forma de resistir al paso del tiempo. Su tienda representa un lugar donde todavía se valora lo antiguo, lo análogo y lo emocional. En ese sentido, la novela muestra cómo algunas personas encuentran en el arte una manera de protegerse de una realidad que sienten demasiado dura o difícil de comprender.</p>
+      </article>
+
+      <article class="seccion">
+        <div class="kicker">Tecnología</div>
+        <h3>Una sociedad en cambio tecnológico</h3>
+        <p class="dropcap">Además del contexto político, la novela también refleja una transformación cultural y tecnológica. A comienzos de los años 2000, el consumo musical estaba cambiando rápidamente. El CD ya había reemplazado en gran parte al vinilo, y empezaban a tomar fuerza los archivos digitales, el MP3 y las nuevas formas de escuchar música por internet.</p>
+        <p>En ese nuevo panorama, los discos de acetato y las colecciones antiguas empezaban a verse como objetos pasados de moda. Muchas personas los vendían, los regalaban o los botaban porque ya no los consideraban útiles. Por eso, la obsesión de Francisco por conservar y buscar grabaciones antiguas tiene un sentido especial: él intenta rescatar una memoria musical que parece estar desapareciendo.</p>
+      </article>
+    </div>
+
+    <!-- CIERRE / EDITORIAL -->
+    <article class="cierre">
+      <div class="kicker">Opinión · Cierre</div>
+      <h3>La música como forma de resistencia</h3>
+      <div class="cols" style="margin-top:14px;">
+        <p class="dropcap">El contexto colombiano de la novela no aparece únicamente a través de la política o la violencia, sino también a través de la cultura. La música se presenta como una forma de memoria y de resistencia íntima. En medio de un país marcado por el conflicto, los personajes buscan en los discos, las canciones y las grabaciones una manera de encontrar belleza, compañía y sentido.</p>
+        <p>Así, <em>La nostalgia del melómano</em> no ignora la realidad de Colombia, pero decide mirarla desde otro lugar. En vez de mostrar directamente la guerra o el crimen, presenta a unos personajes que se refugian en la música para enfrentar la soledad, el cambio y la pérdida. La novela permite entender que, en una sociedad atravesada por la violencia, también existen espacios pequeños donde las personas intentan conservar la sensibilidad, la memoria y la esperanza.</p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>
