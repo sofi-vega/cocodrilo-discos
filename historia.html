@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Historia del libro | El Cocodrilo Discos</title>
+
+<!-- ====== ESTILOS (puedes mover esto a historia.css) ====== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+
+:root{
+  --oro:#e0b43c; --oro-bright:#f5ca4e;
+  --verde:#123d20; --verde-claro:#1e6b3a; --verde-oscuro:#0a2412;
+  --crema:#fff4c4;
+  /* tapa oscura */
+  --cover-1:#15201a; --cover-2:#0a0f0b;
+  --texto:#ece7d6; --texto-soft:#a9a692;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:#0a0a07;
+  min-height:100vh; overflow-y:auto;
+  font-family:'EB Garamond', Georgia, serif; color:var(--texto);
+  padding:54px 16px 60px;
+  display:flex; justify-content:center; align-items:flex-start;
+}
+
+.barra-titulo{
+  position:fixed; top:0; left:0; right:0; height:26px;
+  background:linear-gradient(180deg, var(--verde-claro) 0%, var(--verde) 60%, var(--verde-oscuro) 100%);
+  border-bottom:2px solid var(--oro); color:var(--crema);
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  display:flex; align-items:center; padding-left:14px; z-index:100; text-shadow:1px 1px 0 var(--verde-oscuro);
+}
+.volver{
+  position:fixed; top:38px; left:24px; z-index:80;
+  padding:9px 15px; background:rgba(18,61,32,.92); color:var(--crema);
+  border:2px solid var(--oro); text-decoration:none;
+  font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.7); transition:transform .12s, background .12s;
+}
+.volver:hover{ transform:translate(-2px,-2px); background:var(--verde-claro); }
+
+/* ====== CONTRAPORTADA (oscura) ====== */
+.contraportada{
+  position:relative; width:580px; max-width:96vw; margin-top:16px;
+  background:
+    radial-gradient(circle at 82% 10%, rgba(224,180,60,.06), transparent 42%),
+    linear-gradient(180deg, var(--cover-1), var(--cover-2));
+  border:1px solid #2b352b;
+  box-shadow:0 26px 55px rgba(0,0,0,.7), inset 0 0 60px rgba(0,0,0,.45);
+  padding:30px 38px 34px; color:var(--texto);
+}
+/* sombra del lomo (lado derecho) */
+.contraportada::before{
+  content:''; position:absolute; top:0; right:0; bottom:0; width:38px;
+  background:linear-gradient(270deg, rgba(0,0,0,.45), transparent); pointer-events:none;
+}
+
+.genero{ font-family:'Press Start 2P',monospace; font-size:7px; letter-spacing:2px; color:var(--oro); text-transform:uppercase; }
+.resena{
+  font-family:'Playfair Display',serif; font-style:italic; font-weight:400;
+  font-size:21px; line-height:1.4; color:#fbf7ea; margin:14px 0 6px;
+  border-left:3px solid var(--oro); padding-left:14px;
+}
+.titulo-libro{ font-family:'Playfair Display',serif; font-weight:900; font-size:30px; line-height:1.05; color:#ffffff; margin-top:18px; }
+.autor-libro{ font-family:'Playfair Display',serif; font-style:italic; font-size:17px; color:var(--oro); margin-top:4px; }
+.regla{ height:0; border-top:1px solid rgba(224,180,60,.45); margin:16px 0; }
+
+.sinopsis p{ font-size:17.5px; line-height:1.62; text-align:justify; margin-bottom:12px; color:var(--texto); }
+.sinopsis p:first-child::first-letter{
+  float:left; font-family:'Playfair Display',serif; font-weight:900; font-size:50px; line-height:.8; padding:5px 8px 0 0; color:var(--oro);
+}
+.sinopsis em{ font-style:italic; color:#fbf7ea; }
+
+/* ====== SPOILERS ====== */
+.spoiler-zona{ margin-top:24px; }
+.cinta{
+  width:100%; cursor:pointer; border:none;
+  font-family:'Press Start 2P',monospace; font-size:9px; letter-spacing:1px;
+  padding:13px 12px; text-align:center;
+  background:repeating-linear-gradient(45deg, var(--oro) 0 14px, #0a0f0b 14px 28px);
+  box-shadow:3px 3px 0 rgba(0,0,0,.6);
+}
+.cinta span{ background:#0a0f0b; color:var(--oro); padding:7px 12px; display:inline-block; border:2px solid var(--oro); }
+.cinta:hover span{ background:var(--oro); color:#0a0f0b; }
+
+.spoiler-texto{
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height .7s ease, opacity .6s ease, margin .4s;
+  background:rgba(255,255,255,.04); border:1px solid rgba(224,180,60,.25); border-top:none;
+}
+.spoiler-zona.abierto .spoiler-texto{ max-height:1500px; opacity:1; margin-top:-3px; padding:20px 22px 22px; }
+.spoiler-texto h3{ font-family:'Press Start 2P',monospace; font-size:8px; color:#e0735c; letter-spacing:1px; margin-bottom:14px; text-transform:uppercase; }
+.spoiler-texto p{ font-size:17px; line-height:1.62; text-align:justify; color:var(--texto); }
+.spoiler-texto em{ font-style:italic; color:#fbf7ea; }
+
+/* ====== PIE ====== */
+.pie{ display:flex; justify-content:space-between; align-items:flex-end; margin-top:26px; padding-top:16px; border-top:1px solid rgba(224,180,60,.4); }
+.editorial{ font-family:'Playfair Display',serif; font-weight:700; font-size:18px; letter-spacing:3px; color:#ffffff; text-transform:uppercase; }
+.editorial small{ display:block; font-family:'EB Garamond',serif; font-weight:400; font-size:13px; letter-spacing:1px; color:var(--texto-soft); text-transform:none; margin-top:2px; }
+/* parche claro del código de barras, como en los libros reales */
+.barras{ background:#f4ecd6; padding:6px 8px 4px; border-radius:2px; width:140px; }
+.barras .codigo{ height:42px; background:repeating-linear-gradient(90deg,
+  #111 0 2px, transparent 2px 4px, #111 4px 7px, transparent 7px 8px,
+  #111 8px 9px, transparent 9px 12px, #111 12px 15px, transparent 15px 16px); }
+.barras .num{ font-family:'EB Garamond',serif; font-size:12px; letter-spacing:2px; text-align:center; color:#111; margin-top:3px; }
+
+@media(max-width:560px){ .contraportada{ padding:24px 22px 28px; } .titulo-libro{ font-size:24px; } }
+</style>
+</head>
+
+<body>
+  <div class="barra-titulo">▌ EL COCODRILO DISCOS  ─  HISTORIA DEL LIBRO</div>
+  <a href="index.html?dentro=1" class="volver">← Volver</a>
+
+  <div class="contraportada">
+    <div class="genero">Novela · Ficción</div>
+
+    <p class="resena">«Una celebración de la música como refugio y una reflexión sobre la memoria y el paso del tiempo.»</p>
+
+    <h1 class="titulo-libro">La nostalgia del melómano</h1>
+    <div class="autor-libro">Juan Carlos Garay</div>
+
+    <div class="regla"></div>
+
+    <div class="sinopsis">
+      <p>Francisco Talavera es el dueño de El Cocodrilo Discos, una pequeña tienda de vinilos que sobrevive en una época donde la música digital comienza a desplazar a los formatos tradicionales. Melómano apasionado y coleccionista incansable, Francisco ha construido su vida alrededor de los discos, las historias que esconden y las personas que los buscan.</p>
+      <p>La aparente tranquilidad de su rutina cambia cuando surge la posibilidad de encontrar una grabación extraordinaria, un disco raro rodeado de rumores, recuerdos y versiones contradictorias. Lo que comienza como una simple búsqueda musical termina convirtiéndose en un recorrido por librerías, tiendas de discos, archivos, conversaciones entre coleccionistas y rincones olvidados de la memoria cultural.</p>
+      <p>A través de esta investigación, la novela presenta un universo poblado por melómanos obsesivos, personajes excéntricos y amantes de la música que encuentran en los discos mucho más que objetos de colección. Cada encuentro revela nuevas historias, recuerdos y reflexiones sobre el paso del tiempo, la nostalgia y el valor de conservar aquello que parece destinado a desaparecer.</p>
+      <p>Más que una novela sobre vinilos, <em>La nostalgia del melómano</em> es una celebración de la música como refugio, una reflexión sobre la memoria y una exploración de cómo las canciones, los libros y los objetos culturales pueden convertirse en parte fundamental de nuestra identidad. En un mundo que avanza rápidamente hacia lo digital, Juan Carlos Garay construye una historia que invita a detenerse, escuchar con atención y recordar por qué ciertas pasiones nunca desaparecen.</p>
+    </div>
+
+    <!-- SPOILERS -->
+    <div class="spoiler-zona" id="spZona">
+      <button class="cinta" id="spToggle"><span>⚠ VER SPOILERS · EL FINAL DEL LIBRO</span></button>
+      <div class="spoiler-texto" id="spTexto">
+        <h3>⚠ Lo que la contraportada no te cuenta</h3>
+        <p>En la novela, Francisco Talavera, "Efe", vive su vida a través de los discos. La música de Eric Clapton lo acompaña en diferentes momentos: primero con el álbum de Blind Faith que escuchaba su hermano, luego con el blues que le recuerda a Sandra, y finalmente con el misterioso disco <em>461 Ocean Boulevard</em>, relacionado con la posible grabación de <em>El ratón</em> junto a Cheo Feliciano. Esa obsesión lo lleva a pedir distintas ediciones de la canción, escuchar los discos con los ojos cerrados y buscar pruebas sobre una supuesta sesión en Miami en agosto de 1974. Aunque Lino le ofrece el disco y le hace un descuento, Efe decide no comprarlo porque no está seguro de que sea auténtico. Incluso llega a consultar a un espiritista, y más adelante encuentra una pista que confirma que Feliciano sí estuvo en Miami en esa fecha; sin embargo, cuando intenta comprar el disco, Lino ya se ha ido a Lima. Al mismo tiempo, Efe se enamora de Miranda, su joven asistente, pero nunca se atreve a confesárselo. Ella lo besa antes de irse a estudiar a Nueva York, y él se queda lamentando no haberle dicho lo que sentía. Al final, Efe no consigue ni el disco ni a Miranda: permanece en El Cocodrilo Discos, triste y nostálgico, acompañado por David, el nuevo asistente que ella le recomendó.</p>
+      </div>
+    </div>
+
+    <!-- PIE -->
+    <div class="pie">
+      <div class="editorial">Alfaguara<small>El Cocodrilo Discos · 2005</small></div>
+      <div class="barras">
+        <div class="codigo"></div>
+        <div class="num">9 789580 000000</div>
+      </div>
+    </div>
+  </div>
+
+<!-- ====== LÓGICA (puedes mover esto a historia.js) ====== -->
+<script>
+const spZona   = document.getElementById('spZona');
+const spToggle = document.getElementById('spToggle');
+const spSpan   = spToggle.querySelector('span');
+
+spToggle.addEventListener('click', ()=>{
+  const abierto = spZona.classList.toggle('abierto');
+  spSpan.textContent = abierto ? '✕ OCULTAR SPOILERS' : '⚠ VER SPOILERS · EL FINAL DEL LIBRO';
+  blip();
+});
+
+let audioCtx=null;
+function blip(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type='square'; o.frequency.setValueAtTime(380, audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(560, audioCtx.currentTime+.06);
+    g.gain.setValueAtTime(.05, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime+.1);
+    o.start(); o.stop(audioCtx.currentTime+.1);
+  }catch(_){}
+}
+</script>
+</body>
+</html>
