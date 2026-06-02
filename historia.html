@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Historia del libro | El Cocodrilo Discos</title>
 
-<!-- ====== ESTILOS (puedes mover esto a historia.css) ====== -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
@@ -71,6 +70,25 @@ body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:non
 .etiqueta .cara{ font-family:'Press Start 2P',monospace; font-size:16px; }
 .etiqueta .tit{ font-size:14px; line-height:1; margin-top:8px; opacity:.92; padding:0 8px; }
 .hueco{ position:absolute; top:50%; left:50%; width:9px; height:9px; border-radius:50%; transform:translate(-50%,-50%); background:#000; box-shadow:0 0 0 2px rgba(255,255,255,.15); }
+
+/* ── BOTÓN DE TOCAR (sobre el disco) ── */
+.btn-disco{
+  position:absolute; top:50%; left:46%; transform:translate(-50%,-50%);
+  z-index:7;
+  width:58px; height:58px; border-radius:50%;
+  background:radial-gradient(circle at 38% 32%, var(--verde-claro), var(--verde-oscuro));
+  border:3px solid var(--oro);
+  color:var(--crema); font-size:20px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  padding-left:4px; /* óptico para centrar el ▶ */
+  cursor:pointer;
+  box-shadow:0 5px 0 #061a0c, 0 7px 10px rgba(0,0,0,.6);
+  transition:transform .08s, box-shadow .08s, background .25s, border-color .2s;
+}
+.btn-disco:hover{ border-color:var(--oro-bright); }
+.btn-disco:active{ transform:translate(-50%,calc(-50% + 4px)); box-shadow:0 1px 0 #061a0c, 0 3px 5px rgba(0,0,0,.6); }
+.btn-disco.sonando{ background:radial-gradient(circle at 38% 32%, var(--rojo), #5a160c); padding-left:0; }
+
 .brazo{ position:absolute; top:24px; right:26px; width:8px; height:200px;
   background:linear-gradient(180deg,#eee,#888); border:1px solid #555;
   transform-origin:top center; transform:rotate(8deg); transition:transform .55s cubic-bezier(.4,.1,.2,1); z-index:6; }
@@ -116,6 +134,9 @@ body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:non
   <a href="index.html?dentro=1" class="volver">← Volver</a>
 
   <main class="escena">
+    <!-- AUDIO -->
+    <audio id="cancion" src="audios/elraton.mp3" loop preload="auto"></audio>
+
     <div class="titulo">💿 EL DISCO DE LA HISTORIA</div>
     <div class="sub-libro">La historia de <em>La nostalgia del melómano</em> · pon la Cara A o voltéalo a la Cara B</div>
 
@@ -123,7 +144,7 @@ body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:non
       <!-- TOCADISCOS -->
       <div class="tocadiscos">
         <div class="plato">
-          <div class="disco girando" id="disco">
+          <div class="disco" id="disco">
             <div class="etiqueta" id="etiqueta">
               <span class="cara" id="etCara">CARA A</span>
               <span class="tit">La nostalgia del melómano</span>
@@ -131,7 +152,8 @@ body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:non
             <div class="hueco"></div>
           </div>
         </div>
-        <div class="brazo" id="brazo"></div>
+        <button class="btn-disco" id="btnDisco" aria-label="Tocar El Ratón">▶</button>
+        <div class="brazo levantado" id="brazo"></div>
         <div class="rpm">▸ 33⅓ RPM</div>
       </div>
 
@@ -153,7 +175,6 @@ body::after{ content:''; position:fixed; inset:0; z-index:89; pointer-events:non
     </div>
   </main>
 
-<!-- ====== LÓGICA (puedes mover esto a historia.js) ====== -->
 <script>
 const caraA = {
   cara:'CARA A', color:'radial-gradient(circle at 35% 35%, #e0b43c, #8a6614)',
@@ -188,10 +209,6 @@ function poner(side){
   caraActual=side;
   const d = side==='A' ? caraA : caraB;
 
-  // levanta brazo y reinicia giro
-  brazo.classList.add('levantado');
-  disco.classList.remove('girando'); void disco.offsetWidth;
-
   etiqueta.style.background = d.color;
   etCara.textContent = d.cara;
   lado.textContent = d.lado;
@@ -203,11 +220,33 @@ function poner(side){
   btnB.classList.toggle('activa', side==='B');
 
   flipSonido();
-  setTimeout(()=>{ disco.classList.add('girando'); brazo.classList.remove('levantado'); needle(); }, 420);
 }
 
 btnA.addEventListener('click', ()=> poner('A'));
 btnB.addEventListener('click', ()=> poner('B'));
+
+/* ── audio: botón sobre el disco ── */
+const cancion=document.getElementById('cancion'), btnDisco=document.getElementById('btnDisco');
+let sonando=false;
+
+function tocar(){
+  cancion.play().catch(()=>{});
+  disco.classList.add('girando');
+  brazo.classList.remove('levantado');   // baja la aguja
+  btnDisco.classList.add('sonando');
+  btnDisco.textContent='⏸';
+  needle();
+  sonando=true;
+}
+function parar(){
+  cancion.pause();
+  disco.classList.remove('girando');
+  brazo.classList.add('levantado');       // levanta la aguja
+  btnDisco.classList.remove('sonando');
+  btnDisco.textContent='▶';
+  sonando=false;
+}
+btnDisco.addEventListener('click', ()=> sonando ? parar() : tocar());
 
 /* ── sonidos ── */
 let audioCtx=null;
@@ -223,7 +262,7 @@ function needle(){ try{ const ctx=getCtx(); const dur=.3;
   const src=ctx.createBufferSource(); src.buffer=buf; const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1900;
   const g=ctx.createGain(); g.gain.value=.05; src.connect(hp); hp.connect(g); g.connect(ctx.destination); src.start();}catch(_){} }
 
-/* arranca en Cara A */
+/* arranca en Cara A (sin música, disco quieto) */
 poner('A');
 </script>
 </body>
